@@ -1,0 +1,3093 @@
+<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#050505">
+<meta name="description" content="CONNECTIVA — Connect. Share. Discover.">
+<title>CONNECTIVA</title>
+
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+:root{
+    --bg:#050505;
+    --bg2:#0b0b0b;
+    --card:#111111;
+    --card2:#171717;
+    --border:#262626;
+    --text:#ffffff;
+    --muted:#9a9a9a;
+    --accent:#d4af37;
+    --accent2:#f0d878;
+    --danger:#ef4444;
+    --success:#22c55e;
+    --blue:#3b82f6;
+    --radius:18px;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+    width:100%;
+    min-height:100%;
+    background:var(--bg);
+    color:var(--text);
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+    overflow-x:hidden;
+}
+
+button,
+input,
+textarea{
+    font:inherit;
+}
+
+button{
+    cursor:pointer;
+}
+
+.hidden{
+    display:none !important;
+}
+
+/* ==============================
+   SPLASH
+============================== */
+
+#splash{
+    position:fixed;
+    inset:0;
+    z-index:9999;
+    background:#050505;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    transition:.5s ease;
+}
+
+.logo-mark{
+    width:74px;
+    height:74px;
+    border:2px solid var(--accent);
+    border-radius:22px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--accent);
+    font-size:30px;
+    font-weight:900;
+    box-shadow:0 0 35px rgba(212,175,55,.15);
+}
+
+.splash-title{
+    margin-top:18px;
+    font-size:28px;
+    font-weight:900;
+    letter-spacing:5px;
+}
+
+.splash-sub{
+    margin-top:8px;
+    color:var(--muted);
+    font-size:12px;
+    letter-spacing:2px;
+}
+
+.loader{
+    margin-top:30px;
+    width:42px;
+    height:42px;
+    border:3px solid #252525;
+    border-top-color:var(--accent);
+    border-radius:50%;
+    animation:spin 1s linear infinite;
+}
+
+@keyframes spin{
+    to{transform:rotate(360deg);}
+}
+
+/* ==============================
+   AUTH
+============================== */
+
+#authScreen{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:25px;
+    background:
+        radial-gradient(circle at top right,rgba(212,175,55,.10),transparent 35%),
+        radial-gradient(circle at bottom left,rgba(59,130,246,.06),transparent 30%),
+        var(--bg);
+}
+
+.auth-box{
+    width:100%;
+    max-width:430px;
+    background:rgba(17,17,17,.96);
+    border:1px solid var(--border);
+    border-radius:28px;
+    padding:28px;
+    box-shadow:0 25px 80px rgba(0,0,0,.55);
+}
+
+.auth-brand{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.auth-brand .mini-logo{
+    width:60px;
+    height:60px;
+    margin:auto;
+    border:2px solid var(--accent);
+    border-radius:18px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--accent);
+    font-size:24px;
+    font-weight:900;
+}
+
+.auth-brand h1{
+    margin-top:15px;
+    font-size:25px;
+    letter-spacing:4px;
+}
+
+.auth-brand p{
+    margin-top:7px;
+    color:var(--muted);
+    font-size:13px;
+}
+
+.auth-tabs{
+    display:flex;
+    background:#0a0a0a;
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:4px;
+    margin-bottom:22px;
+}
+
+.auth-tab{
+    flex:1;
+    border:0;
+    padding:12px;
+    background:transparent;
+    color:var(--muted);
+    border-radius:10px;
+}
+
+.auth-tab.active{
+    background:var(--accent);
+    color:#050505;
+    font-weight:800;
+}
+
+.form-group{
+    margin-bottom:15px;
+}
+
+.form-group label{
+    display:block;
+    margin-bottom:7px;
+    color:#d5d5d5;
+    font-size:13px;
+}
+
+.form-input{
+    width:100%;
+    padding:14px 15px;
+    background:#090909;
+    color:white;
+    border:1px solid var(--border);
+    border-radius:13px;
+    outline:none;
+}
+
+.form-input:focus{
+    border-color:var(--accent);
+}
+
+.primary-btn{
+    width:100%;
+    border:0;
+    border-radius:13px;
+    padding:14px;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    color:#050505;
+    font-weight:900;
+    margin-top:5px;
+}
+
+.primary-btn:disabled{
+    opacity:.55;
+}
+
+.auth-message{
+    margin-top:14px;
+    padding:11px;
+    border-radius:11px;
+    font-size:13px;
+    display:none;
+}
+
+.auth-message.error{
+    display:block;
+    background:rgba(239,68,68,.12);
+    color:#ff8585;
+    border:1px solid rgba(239,68,68,.25);
+}
+
+.auth-message.success{
+    display:block;
+    background:rgba(34,197,94,.10);
+    color:#72e6a0;
+    border:1px solid rgba(34,197,94,.25);
+}
+
+.demo-note{
+    margin-top:18px;
+    text-align:center;
+    color:#777;
+    font-size:11px;
+    line-height:1.5;
+}
+
+/* ==============================
+   APP
+============================== */
+
+#app{
+    min-height:100vh;
+    padding-bottom:76px;
+}
+
+.topbar{
+    position:sticky;
+    top:0;
+    z-index:50;
+    height:64px;
+    background:rgba(5,5,5,.92);
+    backdrop-filter:blur(18px);
+    border-bottom:1px solid var(--border);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 16px;
+}
+
+.brand{
+    font-size:19px;
+    font-weight:900;
+    letter-spacing:3px;
+    color:white;
+}
+
+.brand span{
+    color:var(--accent);
+}
+
+.top-actions{
+    display:flex;
+    gap:8px;
+}
+
+.icon-btn{
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    border:1px solid var(--border);
+    background:#111;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:17px;
+}
+
+.icon-btn:hover{
+    border-color:var(--accent);
+    color:var(--accent);
+}
+
+.page{
+    width:100%;
+    max-width:680px;
+    margin:auto;
+    padding:16px;
+}
+
+.page-title{
+    font-size:25px;
+    font-weight:900;
+    margin:8px 0 18px;
+}
+
+.section-title{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin:18px 0 12px;
+}
+
+.section-title h2{
+    font-size:16px;
+}
+
+.section-title span{
+    color:var(--accent);
+    font-size:12px;
+}
+
+/* ==============================
+   STORIES
+============================== */
+
+.story-row{
+    display:flex;
+    gap:12px;
+    overflow-x:auto;
+    padding:4px 0 8px;
+    scrollbar-width:none;
+}
+
+.story-row::-webkit-scrollbar{
+    display:none;
+}
+
+.story{
+    min-width:68px;
+    text-align:center;
+}
+
+.story-avatar{
+    width:62px;
+    height:62px;
+    border-radius:50%;
+    padding:2px;
+    background:linear-gradient(135deg,var(--accent),#fff0a3,var(--accent));
+    margin:auto;
+}
+
+.story-avatar-inner{
+    width:100%;
+    height:100%;
+    border-radius:50%;
+    background:#191919;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:900;
+    overflow:hidden;
+}
+
+.story-avatar-inner img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.story-name{
+    margin-top:6px;
+    font-size:10px;
+    color:#ccc;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+/* ==============================
+   CREATE POST
+============================== */
+
+.create-card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:15px;
+}
+
+.create-row{
+    display:flex;
+    gap:12px;
+    align-items:center;
+}
+
+.avatar{
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    background:linear-gradient(135deg,#333,#111);
+    border:1px solid #333;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    flex-shrink:0;
+    font-weight:900;
+}
+
+.avatar img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.fake-input{
+    flex:1;
+    background:#0a0a0a;
+    border:1px solid var(--border);
+    border-radius:22px;
+    padding:11px 15px;
+    color:#777;
+    cursor:pointer;
+}
+
+.create-actions{
+    display:flex;
+    margin-top:12px;
+    border-top:1px solid var(--border);
+    padding-top:10px;
+}
+
+.create-action{
+    flex:1;
+    border:0;
+    background:transparent;
+    color:#aaa;
+    padding:8px;
+}
+
+.create-action:hover{
+    color:var(--accent);
+}
+
+/* ==============================
+   POSTS
+============================== */
+
+.post{
+    margin-top:15px;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    overflow:hidden;
+}
+
+.post-head{
+    display:flex;
+    align-items:center;
+    padding:14px;
+    gap:10px;
+}
+
+.post-author{
+    flex:1;
+}
+
+.post-author strong{
+    font-size:14px;
+}
+
+.post-author small{
+    display:block;
+    color:#777;
+    margin-top:3px;
+    font-size:10px;
+}
+
+.more{
+    background:none;
+    border:0;
+    color:#888;
+    font-size:20px;
+}
+
+.post-body{
+    padding:0 14px 14px;
+}
+
+.post-text{
+    color:#e4e4e4;
+    line-height:1.55;
+    font-size:14px;
+    white-space:pre-wrap;
+}
+
+.post-image{
+    width:100%;
+    max-height:500px;
+    object-fit:cover;
+    display:block;
+}
+
+.post-stats{
+    padding:10px 14px;
+    color:#777;
+    font-size:11px;
+    border-bottom:1px solid var(--border);
+}
+
+.post-actions{
+    display:flex;
+    padding:4px 8px;
+}
+
+.post-action{
+    flex:1;
+    border:0;
+    background:transparent;
+    color:#aaa;
+    padding:10px 4px;
+}
+
+.post-action:hover{
+    color:var(--accent);
+}
+
+.post-action.active{
+    color:var(--accent);
+}
+
+/* ==============================
+   DISCOVER
+============================== */
+
+.search-box{
+    display:flex;
+    gap:8px;
+    margin-bottom:18px;
+}
+
+.search-box input{
+    flex:1;
+}
+
+.search-btn{
+    width:48px;
+    border:1px solid var(--border);
+    border-radius:13px;
+    background:#111;
+    color:var(--accent);
+}
+
+.discover-card{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:14px;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:15px;
+    margin-bottom:9px;
+}
+
+.discover-info{
+    flex:1;
+}
+
+.discover-info strong{
+    font-size:14px;
+}
+
+.discover-info small{
+    display:block;
+    color:#777;
+    margin-top:4px;
+}
+
+.follow-btn{
+    border:1px solid var(--accent);
+    color:var(--accent);
+    background:transparent;
+    border-radius:10px;
+    padding:8px 12px;
+    font-size:11px;
+}
+
+/* ==============================
+   MESSAGES
+============================== */
+
+.message-list{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.conversation{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:14px;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:15px;
+}
+
+.conversation-info{
+    flex:1;
+}
+
+.conversation-info strong{
+    font-size:14px;
+}
+
+.conversation-info p{
+    margin-top:4px;
+    color:#777;
+    font-size:12px;
+}
+
+.online-dot{
+    width:8px;
+    height:8px;
+    background:var(--success);
+    border-radius:50%;
+}
+
+/* ==============================
+   PROFILE
+============================== */
+
+.profile-card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:22px;
+    padding:24px;
+    text-align:center;
+}
+
+.profile-large{
+    width:88px;
+    height:88px;
+    margin:auto;
+    border-radius:50%;
+    border:2px solid var(--accent);
+    background:#151515;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    font-size:30px;
+    font-weight:900;
+}
+
+.profile-large img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.profile-card h2{
+    margin-top:13px;
+}
+
+.profile-card p{
+    margin-top:5px;
+    color:#888;
+    font-size:13px;
+}
+
+.profile-stats{
+    display:flex;
+    justify-content:center;
+    gap:35px;
+    margin-top:20px;
+}
+
+.stat strong{
+    display:block;
+    font-size:18px;
+}
+
+.stat span{
+    color:#777;
+    font-size:10px;
+}
+
+/* ==============================
+   SETTINGS
+============================== */
+
+.settings-list{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:18px;
+    overflow:hidden;
+}
+
+.setting{
+    width:100%;
+    padding:16px;
+    background:transparent;
+    border:0;
+    border-bottom:1px solid var(--border);
+    color:white;
+    display:flex;
+    align-items:center;
+    gap:13px;
+    text-align:left;
+}
+
+.setting:last-child{
+    border-bottom:0;
+}
+
+.setting-icon{
+    width:36px;
+    height:36px;
+    border-radius:10px;
+    background:#1b1b1b;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.setting-info{
+    flex:1;
+}
+
+.setting-info strong{
+    display:block;
+    font-size:13px;
+}
+
+.setting-info small{
+    color:#777;
+    display:block;
+    margin-top:3px;
+}
+
+/* ==============================
+   NOTIFICATIONS
+============================== */
+
+.notification{
+    display:flex;
+    gap:12px;
+    padding:14px;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:15px;
+    margin-bottom:9px;
+}
+
+.notification p{
+    color:#ccc;
+    font-size:13px;
+    line-height:1.4;
+}
+
+.notification small{
+    display:block;
+    color:#666;
+    margin-top:4px;
+}
+
+/* ==============================
+   BOTTOM NAV
+============================== */
+
+.bottom-nav{
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    height:68px;
+    background:rgba(7,7,7,.96);
+    backdrop-filter:blur(20px);
+    border-top:1px solid var(--border);
+    z-index:100;
+    display:flex;
+    justify-content:center;
+}
+
+.nav-inner{
+    width:100%;
+    max-width:680px;
+    display:flex;
+}
+
+.nav-btn{
+    flex:1;
+    border:0;
+    background:transparent;
+    color:#666;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:4px;
+    font-size:10px;
+}
+
+.nav-btn .nav-icon{
+    font-size:20px;
+}
+
+.nav-btn.active{
+    color:var(--accent);
+}
+
+/* ==============================
+   MODAL
+============================== */
+
+.modal{
+    position:fixed;
+    inset:0;
+    z-index:500;
+    background:rgba(0,0,0,.75);
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+}
+
+.modal-card{
+    width:100%;
+    max-width:680px;
+    background:#101010;
+    border:1px solid var(--border);
+    border-radius:24px 24px 0 0;
+    padding:20px;
+    max-height:90vh;
+    overflow-y:auto;
+}
+
+.modal-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:18px;
+}
+
+.modal-head h2{
+    font-size:18px;
+}
+
+.close-btn{
+    width:35px;
+    height:35px;
+    border-radius:50%;
+    border:1px solid var(--border);
+    background:#181818;
+    color:white;
+}
+
+.textarea{
+    width:100%;
+    min-height:140px;
+    resize:none;
+    background:#080808;
+    border:1px solid var(--border);
+    border-radius:14px;
+    color:white;
+    padding:14px;
+    outline:none;
+}
+
+.textarea:focus{
+    border-color:var(--accent);
+}
+
+.modal-actions{
+    display:flex;
+    gap:10px;
+    margin-top:12px;
+}
+
+.secondary-btn{
+    flex:1;
+    border:1px solid var(--border);
+    background:#171717;
+    color:#ddd;
+    padding:13px;
+    border-radius:12px;
+}
+
+.modal-actions .primary-btn{
+    flex:2;
+}
+
+/* ==============================
+   TOAST
+============================== */
+
+#toast{
+    position:fixed;
+    left:50%;
+    bottom:88px;
+    transform:translateX(-50%) translateY(20px);
+    background:#171717;
+    border:1px solid var(--border);
+    color:white;
+    padding:12px 16px;
+    border-radius:12px;
+    z-index:1000;
+    opacity:0;
+    pointer-events:none;
+    transition:.3s;
+    font-size:12px;
+    max-width:90%;
+    text-align:center;
+}
+
+#toast.show{
+    opacity:1;
+    transform:translateX(-50%) translateY(0);
+}
+
+/* ==============================
+   LOADING
+============================== */
+
+.loading{
+    padding:30px;
+    text-align:center;
+    color:#777;
+}
+
+.spinner{
+    width:28px;
+    height:28px;
+    border:3px solid #292929;
+    border-top-color:var(--accent);
+    border-radius:50%;
+    animation:spin .8s linear infinite;
+    margin:0 auto 10px;
+}
+
+/* ==============================
+   EMPTY
+============================== */
+
+.empty{
+    text-align:center;
+    padding:45px 20px;
+    color:#777;
+}
+
+.empty-icon{
+    font-size:35px;
+    margin-bottom:10px;
+}
+
+/* ==============================
+   RESPONSIVE
+============================== */
+
+@media(min-width:700px){
+    .bottom-nav{
+        left:50%;
+        right:auto;
+        transform:translateX(-50%);
+        width:680px;
+    }
+
+    .modal{
+        align-items:center;
+    }
+
+    .modal-card{
+        border-radius:24px;
+        width:90%;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ==============================
+     SPLASH
+============================== -->
+
+<div id="splash">
+    <div class="logo-mark">C</div>
+    <div class="splash-title">CONNECTIVA</div>
+    <div class="splash-sub">CONNECT • SHARE • DISCOVER</div>
+    <div class="loader"></div>
+</div>
+
+<!-- ==============================
+     AUTH SCREEN
+============================== -->
+
+<section id="authScreen" class="hidden">
+
+    <div class="auth-box">
+
+        <div class="auth-brand">
+            <div class="mini-logo">C</div>
+            <h1>CONNECTIVA</h1>
+            <p>Your digital social space.</p>
+        </div>
+
+        <div class="auth-tabs">
+            <button id="loginTab" class="auth-tab active">
+                Login
+            </button>
+
+            <button id="signupTab" class="auth-tab">
+                Sign Up
+            </button>
+        </div>
+
+        <form id="authForm">
+
+            <div id="nameGroup" class="form-group hidden">
+                <label>Display name</label>
+                <input
+                    id="displayName"
+                    class="form-input"
+                    type="text"
+                    placeholder="Your name"
+                    maxlength="50"
+                >
+            </div>
+
+            <div id="usernameGroup" class="form-group hidden">
+                <label>Username</label>
+                <input
+                    id="username"
+                    class="form-input"
+                    type="text"
+                    placeholder="yourusername"
+                    maxlength="30"
+                >
+            </div>
+
+            <div class="form-group">
+                <label>Email</label>
+                <input
+                    id="email"
+                    class="form-input"
+                    type="email"
+                    placeholder="you@example.com"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label>Password</label>
+                <input
+                    id="password"
+                    class="form-input"
+                    type="password"
+                    placeholder="Minimum 6 characters"
+                    minlength="6"
+                    required
+                >
+            </div>
+
+            <button id="authButton" class="primary-btn" type="submit">
+                Login to CONNECTIVA
+            </button>
+
+        </form>
+
+        <div id="authMessage" class="auth-message"></div>
+
+        <div class="demo-note">
+            CONNECTIVA is connected to its secure Supabase backend.
+            Never share your database password or service-role key.
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ==============================
+     MAIN APP
+============================== -->
+
+<div id="app" class="hidden">
+
+    <header class="topbar">
+
+        <div class="brand">
+            CONNECT<span>IVA</span>
+        </div>
+
+        <div class="top-actions">
+
+            <button
+                class="icon-btn"
+                onclick="showPage('notifications')"
+                aria-label="Notifications"
+            >
+                🔔
+            </button>
+
+            <button
+                class="icon-btn"
+                onclick="showPage('messages')"
+                aria-label="Messages"
+            >
+                💬
+            </button>
+
+        </div>
+
+    </header>
+
+    <!-- HOME -->
+
+    <main id="homePage" class="page">
+
+        <div class="page-title">
+            Home
+        </div>
+
+        <div class="section-title">
+            <h2>Stories</h2>
+            <span>View all</span>
+        </div>
+
+        <div id="stories" class="story-row">
+
+            <div class="story">
+                <div class="story-avatar">
+                    <div class="story-avatar-inner">+</div>
+                </div>
+                <div class="story-name">Your story</div>
+            </div>
+
+            <div class="story">
+                <div class="story-avatar">
+                    <div class="story-avatar-inner">C</div>
+                </div>
+                <div class="story-name">CONNECTIVA</div>
+            </div>
+
+        </div>
+
+        <div class="section-title">
+            <h2>Create something</h2>
+        </div>
+
+        <div class="create-card">
+
+            <div class="create-row">
+
+                <div id="createAvatar" class="avatar">
+                    U
+                </div>
+
+                <div
+                    class="fake-input"
+                    onclick="openPostModal()"
+                >
+                    What's happening?
+                </div>
+
+            </div>
+
+            <div class="create-actions">
+
+                <button
+                    class="create-action"
+                    onclick="openPostModal()"
+                >
+                    🖼️ Photo
+                </button>
+
+                <button
+                    class="create-action"
+                    onclick="openPostModal()"
+                >
+                    ✨ Post
+                </button>
+
+                <button
+                    class="create-action"
+                    onclick="showToast('More creation tools coming soon')"
+                >
+                    📊 More
+                </button>
+
+            </div>
+
+        </div>
+
+        <div class="section-title">
+            <h2>Latest posts</h2>
+        </div>
+
+        <div id="feed">
+
+            <div class="loading">
+                <div class="spinner"></div>
+                Loading CONNECTIVA...
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- DISCOVER -->
+
+    <main id="discoverPage" class="page hidden">
+
+        <div class="page-title">
+            Discover
+        </div>
+
+        <div class="search-box">
+
+            <input
+                id="userSearch"
+                class="form-input"
+                type="search"
+                placeholder="Search people..."
+            >
+
+            <button
+                class="search-btn"
+                onclick="searchUsers()"
+            >
+                🔎
+            </button>
+
+        </div>
+
+        <div class="section-title">
+            <h2>People</h2>
+        </div>
+
+        <div id="discoverResults">
+
+            <div class="empty">
+                <div class="empty-icon">🔎</div>
+                Search for people on CONNECTIVA.
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- MESSAGES -->
+
+    <main id="messagesPage" class="page hidden">
+
+        <div class="page-title">
+            Messages
+        </div>
+
+        <div class="message-list">
+
+            <div class="conversation">
+
+                <div class="avatar">
+                    C
+                </div>
+
+                <div class="conversation-info">
+                    <strong>CONNECTIVA</strong>
+                    <p>Your secure conversations will appear here.</p>
+                </div>
+
+                <div class="online-dot"></div>
+
+            </div>
+
+            <div class="empty">
+                <div class="empty-icon">💬</div>
+                No conversations yet.
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- NOTIFICATIONS -->
+
+    <main id="notificationsPage" class="page hidden">
+
+        <div class="page-title">
+            Notifications
+        </div>
+
+        <div id="notifications">
+
+            <div class="notification">
+
+                <div class="avatar">
+                    C
+                </div>
+
+                <div>
+                    <p>
+                        Welcome to CONNECTIVA. Your account is connected
+                        to the secure backend.
+                    </p>
+
+                    <small>Just now</small>
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- PROFILE -->
+
+    <main id="profilePage" class="page hidden">
+
+        <div class="page-title">
+            Profile
+        </div>
+
+        <div class="profile-card">
+
+            <div id="profileAvatar" class="profile-large">
+                U
+            </div>
+
+            <h2 id="profileName">
+                User
+            </h2>
+
+            <p id="profileUsername">
+                @username
+            </p>
+
+            <p id="profileBio">
+                Welcome to CONNECTIVA.
+            </p>
+
+            <div class="profile-stats">
+
+                <div class="stat">
+                    <strong id="postsCount">0</strong>
+                    <span>Posts</span>
+                </div>
+
+                <div class="stat">
+                    <strong>0</strong>
+                    <span>Followers</span>
+                </div>
+
+                <div class="stat">
+                    <strong>0</strong>
+                    <span>Following</span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- SETTINGS -->
+
+    <main id="settingsPage" class="page hidden">
+
+        <div class="page-title">
+            Settings
+        </div>
+
+        <div class="settings-list">
+
+            <button class="setting">
+                <div class="setting-icon">👤</div>
+
+                <div class="setting-info">
+                    <strong>Account</strong>
+                    <small>Manage your CONNECTIVA account</small>
+                </div>
+
+                <span>›</span>
+            </button>
+
+            <button class="setting">
+                <div class="setting-icon">🔒</div>
+
+                <div class="setting-info">
+                    <strong>Privacy & Security</strong>
+                    <small>Control your privacy and security</small>
+                </div>
+
+                <span>›</span>
+            </button>
+
+            <button class="setting">
+                <div class="setting-icon">🔔</div>
+
+                <div class="setting-info">
+                    <strong>Notifications</strong>
+                    <small>Manage notification preferences</small>
+                </div>
+
+                <span>›</span>
+            </button>
+
+            <button class="setting">
+                <div class="setting-icon">🌐</div>
+
+                <div class="setting-info">
+                    <strong>Language</strong>
+                    <small>English</small>
+                </div>
+
+                <span>›</span>
+            </button>
+
+            <button
+                class="setting"
+                onclick="signOutUser()"
+            >
+                <div class="setting-icon">🚪</div>
+
+                <div class="setting-info">
+                    <strong>Log out</strong>
+                    <small>Sign out of CONNECTIVA</small>
+                </div>
+
+                <span>›</span>
+            </button>
+
+        </div>
+
+    </main>
+
+</div>
+
+<!-- ==============================
+     BOTTOM NAV
+============================== -->
+
+<div id="bottomNav" class="bottom-nav hidden">
+
+    <div class="nav-inner">
+
+        <button
+            class="nav-btn active"
+            data-page="home"
+            onclick="showPage('home')"
+        >
+            <span class="nav-icon">⌂</span>
+            Home
+        </button>
+
+        <button
+            class="nav-btn"
+            data-page="discover"
+            onclick="showPage('discover')"
+        >
+            <span class="nav-icon">🔎</span>
+            Discover
+        </button>
+
+        <button
+            class="nav-btn"
+            data-page="messages"
+            onclick="showPage('messages')"
+        >
+            <span class="nav-icon">💬</span>
+            Messages
+        </button>
+
+        <button
+            class="nav-btn"
+            data-page="profile"
+            onclick="showPage('profile')"
+        >
+            <span class="nav-icon">👤</span>
+            Profile
+        </button>
+
+        <button
+            class="nav-btn"
+            data-page="settings"
+            onclick="showPage('settings')"
+        >
+            <span class="nav-icon">⚙️</span>
+            Settings
+        </button>
+
+    </div>
+
+</div>
+
+<!-- ==============================
+     CREATE POST MODAL
+============================== -->
+
+<div id="postModal" class="modal hidden">
+
+    <div class="modal-card">
+
+        <div class="modal-head">
+
+            <h2>Create post</h2>
+
+            <button
+                class="close-btn"
+                onclick="closePostModal()"
+            >
+                ×
+            </button>
+
+        </div>
+
+        <textarea
+            id="postContent"
+            class="textarea"
+            placeholder="Share something with CONNECTIVA..."
+            maxlength="5000"
+        ></textarea>
+
+        <div class="modal-actions">
+
+            <button
+                class="secondary-btn"
+                onclick="closePostModal()"
+            >
+                Cancel
+            </button>
+
+            <button
+                id="publishButton"
+                class="primary-btn"
+                onclick="publishPost()"
+            >
+                Publish
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- TOAST -->
+
+<div id="toast"></div>
+
+<script>
+/* =========================================================
+   CONNECTIVA
+   SUPABASE CONFIGURATION
+   ========================================================= */
+
+const SUPABASE_URL =
+    "https://mrzlxirhwwtqzigjqqkd.supabase.co";
+
+const SUPABASE_PUBLISHABLE_KEY =
+    "sb_publishable_zcl7cHBt-q-cSITBSik4Bg_cHWnK7Cq";
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
+    );
+
+
+/* =========================================================
+   STATE
+   ========================================================= */
+
+let currentUser = null;
+let currentProfile = null;
+let authMode = "login";
+
+
+/* =========================================================
+   DOM
+   ========================================================= */
+
+const splash =
+    document.getElementById("splash");
+
+const authScreen =
+    document.getElementById("authScreen");
+
+const app =
+    document.getElementById("app");
+
+const bottomNav =
+    document.getElementById("bottomNav");
+
+const authForm =
+    document.getElementById("authForm");
+
+const authMessage =
+    document.getElementById("authMessage");
+
+const loginTab =
+    document.getElementById("loginTab");
+
+const signupTab =
+    document.getElementById("signupTab");
+
+const nameGroup =
+    document.getElementById("nameGroup");
+
+const usernameGroup =
+    document.getElementById("usernameGroup");
+
+const authButton =
+    document.getElementById("authButton");
+
+
+/* =========================================================
+   HELPERS
+   ========================================================= */
+
+function showToast(message){
+
+    const toast =
+        document.getElementById("toast");
+
+    toast.textContent = message;
+
+    toast.classList.add("show");
+
+    setTimeout(() => {
+        toast.classList.remove("show");
+    }, 3000);
+}
+
+
+function showAuthMessage(message,type){
+
+    authMessage.textContent = message;
+
+    authMessage.className =
+        "auth-message " + type;
+}
+
+
+function clearAuthMessage(){
+
+    authMessage.textContent = "";
+
+    authMessage.className =
+        "auth-message";
+}
+
+
+function escapeHTML(value){
+
+    if(value === null || value === undefined){
+        return "";
+    }
+
+    return String(value)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+}
+
+
+function getInitials(name){
+
+    if(!name){
+        return "U";
+    }
+
+    return name
+        .trim()
+        .split(/\s+/)
+        .slice(0,2)
+        .map(word => word[0])
+        .join("")
+        .toUpperCase();
+}
+
+
+function formatDate(date){
+
+    if(!date){
+        return "";
+    }
+
+    const d =
+        new Date(date);
+
+    return d.toLocaleString(
+        undefined,
+        {
+            dateStyle:"medium",
+            timeStyle:"short"
+        }
+    );
+}
+
+
+/* =========================================================
+   AUTH MODE
+   ========================================================= */
+
+function setAuthMode(mode){
+
+    authMode = mode;
+
+    clearAuthMessage();
+
+    if(mode === "login"){
+
+        loginTab.classList.add("active");
+        signupTab.classList.remove("active");
+
+        nameGroup.classList.add("hidden");
+        usernameGroup.classList.add("hidden");
+
+        authButton.textContent =
+            "Login to CONNECTIVA";
+
+    }else{
+
+        signupTab.classList.add("active");
+        loginTab.classList.remove("active");
+
+        nameGroup.classList.remove("hidden");
+        usernameGroup.classList.remove("hidden");
+
+        authButton.textContent =
+            "Create CONNECTIVA Account";
+    }
+}
+
+
+loginTab.addEventListener(
+    "click",
+    () => setAuthMode("login")
+);
+
+
+signupTab.addEventListener(
+    "click",
+    () => setAuthMode("signup")
+);
+
+
+/* =========================================================
+   SIGN UP / LOGIN
+   ========================================================= */
+
+authForm.addEventListener(
+    "submit",
+    async function(event){
+
+        event.preventDefault();
+
+        clearAuthMessage();
+
+        const email =
+            document.getElementById("email")
+                .value
+                .trim();
+
+        const password =
+            document.getElementById("password")
+                .value;
+
+        const displayName =
+            document.getElementById("displayName")
+                .value
+                .trim();
+
+        const username =
+            document.getElementById("username")
+                .value
+                .trim()
+                .toLowerCase()
+                .replace(/[^a-z0-9_]/g,"");
+
+        authButton.disabled = true;
+
+        authButton.textContent =
+            authMode === "login"
+            ? "Signing in..."
+            : "Creating account...";
+
+        try{
+
+            if(authMode === "signup"){
+
+                if(displayName.length < 2){
+
+                    throw new Error(
+                        "Please enter your display name."
+                    );
+                }
+
+                if(username.length < 3){
+
+                    throw new Error(
+                        "Username must contain at least 3 characters."
+                    );
+                }
+
+                const { data, error } =
+                    await supabaseClient.auth.signUp({
+
+                        email: email,
+
+                        password: password,
+
+                        options:{
+                            data:{
+                                display_name:displayName,
+                                username:username
+                            }
+                        }
+
+                    });
+
+                if(error){
+                    throw error;
+                }
+
+                /*
+                 * Confirm email is enabled in the
+                 * CONNECTIVA Supabase project.
+                 */
+
+                showAuthMessage(
+                    "Account created. Check your email and confirm your address before signing in.",
+                    "success"
+                );
+
+                authForm.reset();
+
+                setAuthMode("login");
+
+            }else{
+
+                const { data, error } =
+                    await supabaseClient.auth.signInWithPassword({
+
+                        email:email,
+
+                        password:password
+
+                    });
+
+                if(error){
+                    throw error;
+                }
+
+                if(data.user){
+
+                    currentUser =
+                        data.user;
+
+                    await loadUserProfile();
+
+                    showApp();
+                }
+            }
+
+        }catch(error){
+
+            console.error(error);
+
+            showAuthMessage(
+                getFriendlyAuthError(error),
+                "error"
+            );
+
+        }finally{
+
+            authButton.disabled = false;
+
+            authButton.textContent =
+                authMode === "login"
+                ? "Login to CONNECTIVA"
+                : "Create CONNECTIVA Account";
+        }
+
+    }
+);
+
+
+/* =========================================================
+   FRIENDLY AUTH ERRORS
+   ========================================================= */
+
+function getFriendlyAuthError(error){
+
+    const message =
+        error?.message || "";
+
+    const lower =
+        message.toLowerCase();
+
+    if(lower.includes("invalid login credentials")){
+        return "Email or password is incorrect.";
+    }
+
+    if(lower.includes("email not confirmed")){
+        return "Please confirm your email address first.";
+    }
+
+    if(lower.includes("user already registered")){
+        return "This email is already registered. Try logging in.";
+    }
+
+    if(lower.includes("password")){
+        return message;
+    }
+
+    if(lower.includes("rate limit")){
+        return "Too many attempts. Please wait a little and try again.";
+    }
+
+    return message ||
+        "Something went wrong. Please try again.";
+}
+
+
+/* =========================================================
+   SESSION
+   ========================================================= */
+
+async function checkSession(){
+
+    try{
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient.auth.getSession();
+
+        if(error){
+            throw error;
+        }
+
+        currentUser =
+            data.session?.user || null;
+
+        if(currentUser){
+
+            await loadUserProfile();
+
+            showApp();
+
+        }else{
+
+            showAuth();
+
+        }
+
+    }catch(error){
+
+        console.error(
+            "Session error:",
+            error
+        );
+
+        showAuth();
+    }
+}
+
+
+/* =========================================================
+   AUTH STATE LISTENER
+   ========================================================= */
+
+supabaseClient.auth.onAuthStateChange(
+    async function(event,session){
+
+        currentUser =
+            session?.user || null;
+
+        if(
+            event === "SIGNED_IN" &&
+            currentUser
+        ){
+
+            /*
+             * Do not call heavy Supabase work
+             * directly inside this callback.
+             */
+
+            setTimeout(async () => {
+
+                await loadUserProfile();
+
+                showApp();
+
+            },0);
+        }
+
+        if(event === "SIGNED_OUT"){
+
+            currentUser = null;
+            currentProfile = null;
+
+            showAuth();
+        }
+
+    }
+);
+
+
+/* =========================================================
+   PROFILE
+   ========================================================= */
+
+async function loadUserProfile(){
+
+    if(!currentUser){
+        return;
+    }
+
+    try{
+
+        let {
+            data,
+            error
+        } =
+            await supabaseClient
+                .from("profiles")
+                .select("*")
+                .eq("id",currentUser.id)
+                .maybeSingle();
+
+        if(error){
+            throw error;
+        }
+
+        /*
+         * The database trigger should normally create
+         * this profile automatically.
+         */
+
+        if(!data){
+
+            const metadata =
+                currentUser.user_metadata || {};
+
+            const displayName =
+                metadata.display_name ||
+                currentUser.email
+                    ?.split("@")[0] ||
+                "User";
+
+            const username =
+                metadata.username ||
+                (
+                    "user_" +
+                    currentUser.id
+                        .slice(0,8)
+                );
+
+            const result =
+                await supabaseClient
+                    .from("profiles")
+                    .upsert({
+
+                        id:currentUser.id,
+
+                        display_name:
+                            displayName,
+
+                        username:
+                            username
+
+                    },{
+                        onConflict:"id"
+                    })
+                    .select()
+                    .single();
+
+            if(result.error){
+                throw result.error;
+            }
+
+            data =
+                result.data;
+        }
+
+        currentProfile =
+            data;
+
+        updateProfileUI();
+
+    }catch(error){
+
+        console.error(
+            "Profile loading error:",
+            error
+        );
+
+        /*
+         * Authentication can still work even if
+         * the profile request temporarily fails.
+         */
+
+        currentProfile = {
+            id:currentUser.id,
+            display_name:
+                currentUser.email
+                    ?.split("@")[0] ||
+                "User",
+            username:
+                "user_" +
+                currentUser.id
+                    .slice(0,8)
+        };
+
+        updateProfileUI();
+    }
+}
+
+
+/* =========================================================
+   PROFILE UI
+   ========================================================= */
+
+function updateProfileUI(){
+
+    if(!currentProfile){
+        return;
+    }
+
+    const name =
+        currentProfile.display_name ||
+        "User";
+
+    const username =
+        currentProfile.username ||
+        "user";
+
+    document.getElementById(
+        "profileName"
+    ).textContent = name;
+
+    document.getElementById(
+        "profileUsername"
+    ).textContent =
+        "@" + username;
+
+    document.getElementById(
+        "profileBio"
+    ).textContent =
+        currentProfile.bio ||
+        "Welcome to CONNECTIVA.";
+
+    const createAvatar =
+        document.getElementById(
+            "createAvatar"
+        );
+
+    const profileAvatar =
+        document.getElementById(
+            "profileAvatar"
+        );
+
+    const initials =
+        getInitials(name);
+
+    createAvatar.textContent =
+        initials;
+
+    profileAvatar.textContent =
+        initials;
+
+    if(currentProfile.avatar_url){
+
+        createAvatar.innerHTML =
+            `<img src="${escapeHTML(
+                currentProfile.avatar_url
+            )}" alt="Avatar">`;
+
+        profileAvatar.innerHTML =
+            `<img src="${escapeHTML(
+                currentProfile.avatar_url
+            )}" alt="Avatar">`;
+    }
+}
+
+
+/* =========================================================
+   SHOW / HIDE AUTH
+   ========================================================= */
+
+function showAuth(){
+
+    splash.classList.add("hidden");
+
+    app.classList.add("hidden");
+
+    bottomNav.classList.add("hidden");
+
+    authScreen.classList.remove("hidden");
+}
+
+
+function showApp(){
+
+    splash.classList.add("hidden");
+
+    authScreen.classList.add("hidden");
+
+    app.classList.remove("hidden");
+
+    bottomNav.classList.remove("hidden");
+
+    showPage("home");
+
+    loadFeed();
+}
+
+
+/* =========================================================
+   PAGE NAVIGATION
+   ========================================================= */
+
+const pageNames = [
+    "home",
+    "discover",
+    "messages",
+    "notifications",
+    "profile",
+    "settings"
+];
+
+
+function showPage(page){
+
+    pageNames.forEach(
+        function(name){
+
+            const element =
+                document.getElementById(
+                    name + "Page"
+                );
+
+            if(element){
+                element.classList.toggle(
+                    "hidden",
+                    name !== page
+                );
+            }
+        }
+    );
+
+    document
+        .querySelectorAll(".nav-btn")
+        .forEach(button => {
+
+            button.classList.toggle(
+                "active",
+                button.dataset.page === page
+            );
+
+        });
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+}
+
+
+/* =========================================================
+   FEED
+   ========================================================= */
+
+async function loadFeed(){
+
+    const feed =
+        document.getElementById("feed");
+
+    feed.innerHTML = `
+        <div class="loading">
+            <div class="spinner"></div>
+            Loading posts...
+        </div>
+    `;
+
+    try{
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient
+                .from("posts")
+                .select(`
+                    *,
+                    profiles:author_id(
+                        id,
+                        username,
+                        display_name,
+                        avatar_url
+                    )
+                `)
+                .order(
+                    "created_at",
+                    {ascending:false}
+                )
+                .limit(30);
+
+        if(error){
+            throw error;
+        }
+
+        if(!data || data.length === 0){
+
+            feed.innerHTML = `
+                <div class="empty">
+                    <div class="empty-icon">✨</div>
+                    <strong>No posts yet.</strong>
+                    <p style="margin-top:8px;">
+                        Be the first person to share something.
+                    </p>
+                </div>
+            `;
+
+            return;
+        }
+
+        feed.innerHTML =
+            data
+                .map(renderPost)
+                .join("");
+
+    }catch(error){
+
+        console.error(
+            "Feed error:",
+            error
+        );
+
+        feed.innerHTML = `
+            <div class="empty">
+                <div class="empty-icon">⚠️</div>
+                <strong>Unable to load posts.</strong>
+                <p style="margin-top:8px;">
+                    ${escapeHTML(error.message)}
+                </p>
+            </div>
+        `;
+    }
+}
+
+
+/* =========================================================
+   RENDER POST
+   ========================================================= */
+
+function renderPost(post){
+
+    const profile =
+        post.profiles || {};
+
+    const name =
+        profile.display_name ||
+        profile.username ||
+        "CONNECTIVA User";
+
+    const username =
+        profile.username ||
+        "user";
+
+    const initials =
+        getInitials(name);
+
+    const text =
+        post.content ||
+        post.body ||
+        "";
+
+    const created =
+        formatDate(
+            post.created_at
+        );
+
+    const avatarHTML =
+        profile.avatar_url
+        ?
+        `<img src="${escapeHTML(
+            profile.avatar_url
+        )}" alt="Avatar">`
+        :
+        initials;
+
+    return `
+        <article
+            class="post"
+            data-post-id="${escapeHTML(post.id)}"
+        >
+
+            <div class="post-head">
+
+                <div class="avatar">
+                    ${avatarHTML}
+                </div>
+
+                <div class="post-author">
+                    <strong>
+                        ${escapeHTML(name)}
+                    </strong>
+
+                    <small>
+                        @${escapeHTML(username)}
+                        ·
+                        ${escapeHTML(created)}
+                    </small>
+                </div>
+
+                <button
+                    class="more"
+                    onclick="showToast('Post options coming soon')"
+                >
+                    ⋯
+                </button>
+
+            </div>
+
+            <div class="post-body">
+
+                ${
+                    text
+                    ?
+                    `<div class="post-text">
+                        ${escapeHTML(text)}
+                    </div>`
+                    :
+                    ""
+                }
+
+            </div>
+
+            <div class="post-stats">
+                0 likes · 0 comments
+            </div>
+
+            <div class="post-actions">
+
+                <button
+                    class="post-action"
+                    onclick="likePost('${escapeHTML(post.id)}')"
+                >
+                    ♡ Like
+                </button>
+
+                <button
+                    class="post-action"
+                    onclick="showToast('Comments are coming next')"
+                >
+                    💬 Comment
+                </button>
+
+                <button
+                    class="post-action"
+                    onclick="showToast('Share feature is coming next')"
+                >
+                    ↗ Share
+                </button>
+
+                <button
+                    class="post-action"
+                    onclick="savePost('${escapeHTML(post.id)}')"
+                >
+                    🔖 Save
+                </button>
+
+            </div>
+
+        </article>
+    `;
+}
+
+
+/* =========================================================
+   CREATE POST
+   ========================================================= */
+
+function openPostModal(){
+
+    document
+        .getElementById("postModal")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("postContent")
+        .focus();
+}
+
+
+function closePostModal(){
+
+    document
+        .getElementById("postModal")
+        .classList.add("hidden");
+
+    document
+        .getElementById("postContent")
+        .value = "";
+}
+
+
+async function publishPost(){
+
+    if(!currentUser){
+
+        showToast(
+            "Please log in first."
+        );
+
+        return;
+    }
+
+    const content =
+        document
+            .getElementById("postContent")
+            .value
+            .trim();
+
+    if(!content){
+
+        showToast(
+            "Write something before publishing."
+        );
+
+        return;
+    }
+
+    const button =
+        document.getElementById(
+            "publishButton"
+        );
+
+    button.disabled = true;
+
+    button.textContent =
+        "Publishing...";
+
+    try{
+
+        const {
+            error
+        } =
+            await supabaseClient
+                .from("posts")
+                .insert({
+
+                    author_id:
+                        currentUser.id,
+
+                    content:
+                        content
+
+                });
+
+        if(error){
+            throw error;
+        }
+
+        closePostModal();
+
+        showToast(
+            "Post published successfully."
+        );
+
+        await loadFeed();
+
+    }catch(error){
+
+        console.error(error);
+
+        showToast(
+            error.message ||
+            "Could not publish post."
+        );
+
+    }finally{
+
+        button.disabled = false;
+
+        button.textContent =
+            "Publish";
+    }
+}
+
+
+/* =========================================================
+   LIKE
+   ========================================================= */
+
+async function likePost(postId){
+
+    if(!currentUser){
+        return;
+    }
+
+    try{
+
+        const {
+            error
+        } =
+            await supabaseClient
+                .from("post_likes")
+                .insert({
+
+                    post_id:
+                        postId,
+
+                    user_id:
+                        currentUser.id
+
+                });
+
+        if(error){
+
+            if(
+                error.code === "23505"
+            ){
+
+                await supabaseClient
+                    .from("post_likes")
+                    .delete()
+                    .eq(
+                        "post_id",
+                        postId
+                    )
+                    .eq(
+                        "user_id",
+                        currentUser.id
+                    );
+
+                showToast(
+                    "Like removed."
+                );
+
+            }else{
+
+                throw error;
+            }
+
+        }else{
+
+            showToast(
+                "Post liked."
+            );
+        }
+
+    }catch(error){
+
+        console.error(error);
+
+        showToast(
+            "Unable to update like."
+        );
+    }
+}
+
+
+/* =========================================================
+   SAVE POST
+   ========================================================= */
+
+async function savePost(postId){
+
+    if(!currentUser){
+        return;
+    }
+
+    try{
+
+        const {
+            error
+        } =
+            await supabaseClient
+                .from("saved_posts")
+                .insert({
+
+                    post_id:
+                        postId,
+
+                    user_id:
+                        currentUser.id
+
+                });
+
+        if(error){
+
+            if(
+                error.code === "23505"
+            ){
+
+                await supabaseClient
+                    .from("saved_posts")
+                    .delete()
+                    .eq(
+                        "post_id",
+                        postId
+                    )
+                    .eq(
+                        "user_id",
+                        currentUser.id
+                    );
+
+                showToast(
+                    "Post removed from saved."
+                );
+
+            }else{
+
+                throw error;
+            }
+
+        }else{
+
+            showToast(
+                "Post saved."
+            );
+        }
+
+    }catch(error){
+
+        console.error(error);
+
+        showToast(
+            "Unable to update saved post."
+        );
+    }
+}
+
+
+/* =========================================================
+   SEARCH USERS
+   ========================================================= */
+
+async function searchUsers(){
+
+    const query =
+        document
+            .getElementById("userSearch")
+            .value
+            .trim();
+
+    const container =
+        document.getElementById(
+            "discoverResults"
+        );
+
+    if(query.length < 2){
+
+        container.innerHTML = `
+            <div class="empty">
+                <div class="empty-icon">🔎</div>
+                Enter at least 2 characters.
+            </div>
+        `;
+
+        return;
+    }
+
+    container.innerHTML = `
+        <div class="loading">
+            <div class="spinner"></div>
+            Searching...
+        </div>
+    `;
+
+    try{
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient
+                .from("profiles")
+                .select(
+                    "id,username,display_name,avatar_url,bio"
+                )
+                .or(
+                    `username.ilike.%${query}%,display_name.ilike.%${query}%`
+                )
+                .limit(20);
+
+        if(error){
+            throw error;
+        }
+
+        if(!data || data.length === 0){
+
+            container.innerHTML = `
+                <div class="empty">
+                    <div class="empty-icon">😕</div>
+                    No users found.
+                </div>
+            `;
+
+            return;
+        }
+
+        container.innerHTML =
+            data
+                .map(user => {
+
+                    const name =
+                        user.display_name ||
+                        user.username ||
+                        "User";
+
+                    const avatar =
+                        user.avatar_url
+                        ?
+                        `<img src="${escapeHTML(
+                            user.avatar_url
+                        )}" alt="Avatar">`
+                        :
+                        getInitials(name);
+
+                    return `
+                        <div class="discover-card">
+
+                            <div class="avatar">
+                                ${avatar}
+                            </div>
+
+                            <div class="discover-info">
+
+                                <strong>
+                                    ${escapeHTML(name)}
+                                </strong>
+
+                                <small>
+                                    @${escapeHTML(
+                                        user.username || "user"
+                                    )}
+                                </small>
+
+                            </div>
+
+                            <button
+                                class="follow-btn"
+                                onclick="followUser('${escapeHTML(user.id)}')"
+                            >
+                                Follow
+                            </button>
+
+                        </div>
+                    `;
+
+                })
+                .join("");
+
+    }catch(error){
+
+        console.error(error);
+
+        container.innerHTML = `
+            <div class="empty">
+                <div class="empty-icon">⚠️</div>
+                Search failed.
+            </div>
+        `;
+    }
+}
+
+
+/* =========================================================
+   FOLLOW
+   ========================================================= */
+
+async function followUser(userId){
+
+    if(!currentUser){
+        return;
+    }
+
+    if(userId === currentUser.id){
+
+        showToast(
+            "You cannot follow yourself."
+        );
+
+        return;
+    }
+
+    try{
+
+        const {
+            error
+        } =
+            await supabaseClient
+                .from("follows")
+                .insert({
+
+                    follower_id:
+                        currentUser.id,
+
+                    following_id:
+                        userId
+
+                });
+
+        if(error){
+
+            if(error.code === "23505"){
+
+                showToast(
+                    "You are already following this user."
+                );
+
+            }else{
+
+                throw error;
+            }
+
+        }else{
+
+            showToast(
+                "User followed."
+            );
+        }
+
+    }catch(error){
+
+        console.error(error);
+
+        showToast(
+            error.message ||
+            "Unable to follow user."
+        );
+    }
+}
+
+
+/* =========================================================
+   SIGN OUT
+   ========================================================= */
+
+async function signOutUser(){
+
+    try{
+
+        const {
+            error
+        } =
+            await supabaseClient.auth.signOut();
+
+        if(error){
+            throw error;
+        }
+
+        showToast(
+            "You have been logged out."
+        );
+
+    }catch(error){
+
+        console.error(error);
+
+        showToast(
+            "Unable to log out."
+        );
+    }
+}
+
+
+/* =========================================================
+   STARTUP
+   ========================================================= */
+
+window.addEventListener(
+    "load",
+    async function(){
+
+        /*
+         * Give the splash screen a short moment
+         * to display the CONNECTIVA identity.
+         */
+
+        setTimeout(
+            async function(){
+
+                await checkSession();
+
+            },
+            700
+        );
+
+    }
+);
+
+
+/* =========================================================
+   MODAL BACKDROP
+   ========================================================= */
+
+document
+    .getElementById("postModal")
+    .addEventListener(
+        "click",
+        function(event){
+
+            if(
+                event.target === this
+            ){
+
+                closePostModal();
+            }
+        }
+    );
+
+
+/* =========================================================
+   KEYBOARD SHORTCUTS
+   ========================================================= */
+
+document.addEventListener(
+    "keydown",
+    function(event){
+
+        if(
+            event.key === "Escape"
+        ){
+
+            closePostModal();
+        }
+
+    }
+);
+
+
+/* =========================================================
+   CONNECTIVA READY
+   ========================================================= */
+
+console.log(
+    "CONNECTIVA frontend initialized."
+);
+
+console.log(
+    "Supabase project:",
+    SUPABASE_URL
+);
+
+</script>
+
+</body>
+</html>
