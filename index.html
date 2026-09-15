@@ -1,0 +1,3512 @@
+<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080808">
+<title>CONNECTIVA</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    -webkit-tap-highlight-color:transparent;
+}
+
+:root{
+    --bg:#070707;
+    --card:#111111;
+    --card2:#171717;
+    --gold:#d6b15a;
+    --gold2:#f0cf75;
+    --text:#f5f5f5;
+    --muted:#999;
+    --border:#292929;
+    --danger:#ff5c5c;
+    --success:#62d991;
+}
+
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    min-height:100vh;
+}
+
+button,
+input,
+textarea{
+    font:inherit;
+}
+
+button{
+    cursor:pointer;
+}
+
+.hidden{
+    display:none!important;
+}
+
+.app{
+    max-width:650px;
+    margin:auto;
+    min-height:100vh;
+    background:#090909;
+    position:relative;
+    padding-bottom:80px;
+}
+
+/* =========================
+   AUTH
+========================= */
+
+.auth-screen{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:22px;
+    background:
+        radial-gradient(circle at top,#29200b 0%,#090909 40%,#050505 100%);
+}
+
+.auth-box{
+    width:100%;
+    max-width:430px;
+    background:rgba(18,18,18,.96);
+    border:1px solid var(--border);
+    border-radius:24px;
+    padding:28px;
+    box-shadow:0 25px 80px rgba(0,0,0,.5);
+}
+
+.logo{
+    text-align:center;
+    color:var(--gold2);
+    font-size:31px;
+    font-weight:900;
+    letter-spacing:3px;
+    margin-bottom:8px;
+}
+
+.tagline{
+    text-align:center;
+    color:var(--muted);
+    margin-bottom:28px;
+}
+
+.auth-tabs{
+    display:flex;
+    background:#0a0a0a;
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:4px;
+    margin-bottom:20px;
+}
+
+.auth-tabs button{
+    flex:1;
+    border:0;
+    background:transparent;
+    color:var(--muted);
+    padding:12px;
+    border-radius:10px;
+}
+
+.auth-tabs button.active{
+    background:var(--gold);
+    color:#080808;
+    font-weight:bold;
+}
+
+.field{
+    margin-bottom:14px;
+}
+
+.field label{
+    display:block;
+    color:#bbb;
+    font-size:13px;
+    margin-bottom:7px;
+}
+
+.field input,
+.field textarea{
+    width:100%;
+    background:#0b0b0b;
+    border:1px solid var(--border);
+    color:white;
+    padding:13px;
+    border-radius:12px;
+    outline:none;
+}
+
+.field textarea{
+    min-height:100px;
+    resize:vertical;
+}
+
+.field input:focus,
+.field textarea:focus{
+    border-color:var(--gold);
+}
+
+.primary-btn{
+    width:100%;
+    background:linear-gradient(135deg,var(--gold2),var(--gold));
+    border:0;
+    color:#080808;
+    font-weight:800;
+    padding:14px;
+    border-radius:13px;
+}
+
+.secondary-btn{
+    background:#181818;
+    color:white;
+    border:1px solid var(--border);
+    padding:11px 14px;
+    border-radius:11px;
+}
+
+.auth-message{
+    margin-top:15px;
+    font-size:13px;
+    line-height:1.5;
+    color:#aaa;
+}
+
+/* =========================
+   TOP BAR
+========================= */
+
+.topbar{
+    position:sticky;
+    top:0;
+    z-index:20;
+    background:rgba(8,8,8,.93);
+    backdrop-filter:blur(15px);
+    border-bottom:1px solid var(--border);
+    padding:15px 17px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+
+.top-logo{
+    color:var(--gold2);
+    font-size:21px;
+    font-weight:900;
+    letter-spacing:2px;
+}
+
+.top-actions{
+    display:flex;
+    gap:8px;
+}
+
+.icon-btn{
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    border:1px solid var(--border);
+    background:#151515;
+    color:white;
+}
+
+/* =========================
+   PAGES
+========================= */
+
+.page{
+    padding:17px;
+}
+
+.page-title{
+    font-size:25px;
+    font-weight:800;
+    margin-bottom:17px;
+}
+
+.subtitle{
+    color:var(--muted);
+    font-size:14px;
+}
+
+/* =========================
+   STORIES
+========================= */
+
+.stories{
+    display:flex;
+    gap:12px;
+    overflow-x:auto;
+    padding-bottom:14px;
+    scrollbar-width:none;
+}
+
+.stories::-webkit-scrollbar{
+    display:none;
+}
+
+.story{
+    flex:0 0 auto;
+    width:68px;
+    text-align:center;
+}
+
+.story-avatar{
+    width:58px;
+    height:58px;
+    border-radius:50%;
+    margin:auto;
+    border:2px solid var(--gold);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:#1a1a1a;
+    color:var(--gold2);
+    font-weight:bold;
+}
+
+.story-name{
+    margin-top:5px;
+    font-size:11px;
+    color:#aaa;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+/* =========================
+   CREATE
+========================= */
+
+.create-card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:17px;
+    padding:15px;
+    margin-bottom:16px;
+}
+
+.create-row{
+    display:flex;
+    gap:11px;
+    align-items:center;
+}
+
+.mini-avatar{
+    width:43px;
+    height:43px;
+    border-radius:50%;
+    background:#222;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    color:var(--gold2);
+    font-weight:bold;
+    flex-shrink:0;
+}
+
+.create-input{
+    flex:1;
+    background:#191919;
+    color:#888;
+    padding:12px 15px;
+    border-radius:22px;
+    border:1px solid var(--border);
+    text-align:left;
+}
+
+/* =========================
+   POSTS
+========================= */
+
+.post{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:18px;
+    margin-bottom:16px;
+    overflow:hidden;
+}
+
+.post-header{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:15px;
+}
+
+.post-author{
+    flex:1;
+}
+
+.post-author strong{
+    display:block;
+}
+
+.post-author span{
+    display:block;
+    color:#777;
+    font-size:12px;
+    margin-top:3px;
+}
+
+.post-body{
+    padding:0 15px 15px;
+    white-space:pre-wrap;
+    line-height:1.6;
+    color:#ddd;
+}
+
+.post-actions{
+    border-top:1px solid var(--border);
+    display:flex;
+    padding:7px;
+}
+
+.post-actions button{
+    flex:1;
+    background:transparent;
+    border:0;
+    color:#aaa;
+    padding:10px 5px;
+    border-radius:8px;
+}
+
+.post-actions button:hover{
+    background:#1b1b1b;
+    color:var(--gold2);
+}
+
+/* =========================
+   BOTTOM NAV
+========================= */
+
+.bottom-nav{
+    position:fixed;
+    bottom:0;
+    left:50%;
+    transform:translateX(-50%);
+    width:min(650px,100%);
+    z-index:30;
+    background:rgba(12,12,12,.97);
+    border-top:1px solid var(--border);
+    display:flex;
+    padding:8px 5px calc(8px + env(safe-area-inset-bottom));
+}
+
+.nav-btn{
+    flex:1;
+    background:transparent;
+    border:0;
+    color:#777;
+    padding:7px 3px;
+    font-size:11px;
+}
+
+.nav-icon{
+    display:block;
+    font-size:20px;
+    margin-bottom:3px;
+}
+
+.nav-btn.active{
+    color:var(--gold2);
+}
+
+/* =========================
+   MODAL
+========================= */
+
+.modal{
+    position:fixed;
+    inset:0;
+    z-index:50;
+    background:rgba(0,0,0,.75);
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+}
+
+.modal-card{
+    width:min(650px,100%);
+    max-height:90vh;
+    overflow:auto;
+    background:#111;
+    border:1px solid var(--border);
+    border-radius:24px 24px 0 0;
+    padding:20px;
+}
+
+.modal-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:18px;
+}
+
+/* =========================
+   SETTINGS
+========================= */
+
+.setting-card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:17px;
+    padding:16px;
+    margin-bottom:14px;
+}
+
+.setting-card h3{
+    margin-bottom:7px;
+}
+
+.setting-card p{
+    color:#999;
+    font-size:13px;
+    line-height:1.5;
+}
+
+.setting-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:13px 0;
+    border-bottom:1px solid #222;
+}
+
+.setting-row:last-child{
+    border-bottom:0;
+}
+
+/* =========================
+   PROFILE
+========================= */
+
+.profile-head{
+    text-align:center;
+    padding:15px 0 25px;
+}
+
+.profile-avatar{
+    width:95px;
+    height:95px;
+    margin:0 auto 12px;
+    border-radius:50%;
+    background:#1d1d1d;
+    border:2px solid var(--gold);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    color:var(--gold2);
+    font-size:31px;
+    font-weight:900;
+}
+
+.profile-name{
+    font-size:23px;
+    font-weight:800;
+}
+
+.profile-username{
+    color:#888;
+    margin-top:4px;
+}
+
+.profile-bio{
+    color:#bbb;
+    margin-top:10px;
+}
+
+/* =========================
+   SEARCH
+========================= */
+
+.search-box{
+    display:flex;
+    gap:8px;
+    margin-bottom:15px;
+}
+
+.search-box input{
+    flex:1;
+    background:#111;
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:12px;
+    color:white;
+}
+
+/* =========================
+   DIAGNOSTICS
+========================= */
+
+.diagnostic{
+    background:#090909;
+    border:1px solid #303030;
+    border-radius:15px;
+    padding:14px;
+    margin-top:12px;
+    overflow:auto;
+}
+
+.diagnostic-title{
+    font-weight:800;
+    margin-bottom:8px;
+}
+
+.diagnostic pre{
+    white-space:pre-wrap;
+    word-break:break-word;
+    color:#bbb;
+    font-size:12px;
+    line-height:1.5;
+}
+
+.success-box{
+    border-color:#285d3d;
+}
+
+.error-box{
+    border-color:#713333;
+}
+
+.warning-box{
+    border-color:#75601f;
+}
+
+.empty{
+    text-align:center;
+    padding:35px 15px;
+    color:#777;
+}
+
+.loading{
+    text-align:center;
+    padding:30px;
+    color:#888;
+}
+
+@media(max-width:450px){
+
+    .page{
+        padding:13px;
+    }
+
+    .auth-box{
+        padding:22px;
+    }
+
+    .top-logo{
+        font-size:18px;
+    }
+
+}
+</style>
+</head>
+
+<body>
+
+<!-- =========================
+     AUTH SCREEN
+========================= -->
+
+<div id="authScreen" class="auth-screen">
+
+    <div class="auth-box">
+
+        <div class="logo">CONNECTIVA</div>
+
+        <div class="tagline">
+            Connect. Share. Discover.
+        </div>
+
+        <div class="auth-tabs">
+
+            <button
+                id="loginTab"
+                class="active"
+                onclick="showAuthMode('login')"
+            >
+                Login
+            </button>
+
+            <button
+                id="signupTab"
+                onclick="showAuthMode('signup')"
+            >
+                Sign Up
+            </button>
+
+        </div>
+
+        <div id="signupFields" class="hidden">
+
+            <div class="field">
+
+                <label>
+                    Display name
+                </label>
+
+                <input
+                    id="signupName"
+                    type="text"
+                    placeholder="Your name"
+                >
+
+            </div>
+
+            <div class="field">
+
+                <label>
+                    Username
+                </label>
+
+                <input
+                    id="signupUsername"
+                    type="text"
+                    placeholder="username"
+                >
+
+            </div>
+
+        </div>
+
+        <div class="field">
+
+            <label>
+                Email
+            </label>
+
+            <input
+                id="authEmail"
+                type="email"
+                placeholder="you@example.com"
+            >
+
+        </div>
+
+        <div class="field">
+
+            <label>
+                Password
+            </label>
+
+            <input
+                id="authPassword"
+                type="password"
+                placeholder="Password"
+            >
+
+        </div>
+
+        <button
+            id="authButton"
+            class="primary-btn"
+            onclick="submitAuth()"
+        >
+            Login
+        </button>
+
+        <div
+            id="authMessage"
+            class="auth-message"
+        ></div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     MAIN APP
+========================= -->
+
+<div id="app" class="app hidden">
+
+    <header class="topbar">
+
+        <div class="top-logo">
+            CONNECTIVA
+        </div>
+
+        <div class="top-actions">
+
+            <button
+                class="icon-btn"
+                onclick="openCreatePost()"
+            >
+                ＋
+            </button>
+
+            <button
+                class="icon-btn"
+                onclick="showPage('notifications')"
+            >
+                🔔
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <!-- HOME -->
+
+    <section
+        id="homePage"
+        class="page"
+    >
+
+        <div class="stories">
+
+            <div class="story">
+
+                <div class="story-avatar">
+                    +
+                </div>
+
+                <div class="story-name">
+                    Your Story
+                </div>
+
+            </div>
+
+            <div class="story">
+
+                <div class="story-avatar">
+                    C
+                </div>
+
+                <div class="story-name">
+                    Connectiva
+                </div>
+
+            </div>
+
+            <div class="story">
+
+                <div class="story-avatar">
+                    A
+                </div>
+
+                <div class="story-name">
+                    Discover
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="create-card">
+
+            <div class="create-row">
+
+                <div
+                    id="homeMiniAvatar"
+                    class="mini-avatar"
+                >
+                    C
+                </div>
+
+                <button
+                    class="create-input"
+                    onclick="openCreatePost()"
+                >
+                    What's happening?
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div id="feed">
+
+            <div class="loading">
+                Loading posts...
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- DISCOVER -->
+
+    <section
+        id="discoverPage"
+        class="page hidden"
+    >
+
+        <div class="page-title">
+            Discover
+        </div>
+
+        <div class="search-box">
+
+            <input
+                id="searchInput"
+                type="text"
+                placeholder="Search users..."
+                onkeydown="if(event.key==='Enter') searchUsers()"
+            >
+
+            <button
+                class="secondary-btn"
+                onclick="searchUsers()"
+            >
+                Search
+            </button>
+
+        </div>
+
+        <div id="searchResults">
+
+            <div class="empty">
+                Search for people on CONNECTIVA.
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- MESSAGES -->
+
+    <section
+        id="messagesPage"
+        class="page hidden"
+    >
+
+        <div class="page-title">
+            Messages
+        </div>
+
+        <div class="empty">
+            💬 Your conversations will appear here.
+        </div>
+
+    </section>
+
+
+    <!-- NOTIFICATIONS -->
+
+    <section
+        id="notificationsPage"
+        class="page hidden"
+    >
+
+        <div class="page-title">
+            Notifications
+        </div>
+
+        <div id="notificationsList">
+
+            <div class="empty">
+                No new notifications.
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- PROFILE -->
+
+    <section
+        id="profilePage"
+        class="page hidden"
+    >
+
+        <div class="profile-head">
+
+            <div
+                id="profileAvatar"
+                class="profile-avatar"
+            >
+                C
+            </div>
+
+            <div
+                id="profileName"
+                class="profile-name"
+            >
+                CONNECTIVA User
+            </div>
+
+            <div
+                id="profileUsername"
+                class="profile-username"
+            >
+                @username
+            </div>
+
+            <div
+                id="profileBio"
+                class="profile-bio"
+            >
+                Welcome to CONNECTIVA.
+            </div>
+
+        </div>
+
+        <h3 style="margin-bottom:15px;">
+            My Posts
+        </h3>
+
+        <div id="myPosts">
+
+            <div class="empty">
+                No posts yet.
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- SETTINGS -->
+
+    <section
+        id="settingsPage"
+        class="page hidden"
+    >
+
+        <div class="page-title">
+            Settings
+        </div>
+
+
+        <div class="setting-card">
+
+            <h3>
+                Account
+            </h3>
+
+            <div class="setting-row">
+
+                <span>
+                    Email
+                </span>
+
+                <span
+                    id="settingsEmail"
+                    style="color:#888;"
+                >
+                    —
+                </span>
+
+            </div>
+
+            <div class="setting-row">
+
+                <span>
+                    Role
+                </span>
+
+                <span
+                    id="settingsRole"
+                    style="color:#888;"
+                >
+                    user
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="setting-card">
+
+            <h3>
+                Security
+            </h3>
+
+            <p>
+                CONNECTIVA uses Supabase Authentication
+                and Row Level Security.
+            </p>
+
+        </div>
+
+
+        <!-- DIAGNOSTICS -->
+
+        <div class="setting-card">
+
+            <h3>
+                🔐 CONNECTIVA Diagnostics
+            </h3>
+
+            <p>
+                These diagnostics inspect the authenticated
+                browser session and the database runtime.
+                They do not weaken CONNECTIVA security.
+            </p>
+
+
+            <!-- CONTEXT -->
+
+            <button
+                class="primary-btn"
+                style="margin-top:15px;"
+                onclick="testPostsInsertContext()"
+            >
+                🔍 Test Posts Insert Context
+            </button>
+
+
+            <div
+                id="contextResult"
+                class="diagnostic hidden"
+            >
+
+                <div class="diagnostic-title">
+                    Posts Insert Context
+                </div>
+
+                <pre id="contextOutput"></pre>
+
+            </div>
+
+
+            <!-- RUNTIME -->
+
+            <button
+                class="primary-btn"
+                style="margin-top:12px;"
+                onclick="testPostsRuntime()"
+            >
+                🔎 Test Posts Runtime
+            </button>
+
+
+            <div
+                id="runtimeResult"
+                class="diagnostic hidden"
+            >
+
+                <div class="diagnostic-title">
+                    Posts Runtime
+                </div>
+
+                <pre id="runtimeOutput"></pre>
+
+            </div>
+
+
+            <!-- REAL INSERT -->
+
+            <button
+                class="secondary-btn"
+                style="width:100%;margin-top:12px;"
+                onclick="testRealPostInsert()"
+            >
+                🧪 Test Real Post Insert
+            </button>
+
+
+            <div
+                id="realInsertResult"
+                class="diagnostic hidden"
+            >
+
+                <div class="diagnostic-title">
+                    Real Post Insert Test
+                </div>
+
+                <pre id="realInsertOutput"></pre>
+
+            </div>
+
+
+            <!-- AUTH -->
+
+            <button
+                class="secondary-btn"
+                style="width:100%;margin-top:12px;"
+                onclick="runDiagnostics()"
+            >
+                🔎 Check Authentication Session
+            </button>
+
+
+            <div
+                id="sessionResult"
+                class="diagnostic hidden"
+            >
+
+                <div class="diagnostic-title">
+                    Authentication Diagnostics
+                </div>
+
+                <pre id="sessionOutput"></pre>
+
+            </div>
+
+
+            <!-- ERROR -->
+
+            <div
+                id="diagnosticError"
+                class="diagnostic error-box hidden"
+            >
+
+                <div class="diagnostic-title">
+                    Error Details
+                </div>
+
+                <pre id="diagnosticErrorOutput"></pre>
+
+            </div>
+
+        </div>
+
+
+        <div class="setting-card">
+
+            <button
+                class="secondary-btn"
+                style="width:100%;"
+                onclick="logout()"
+            >
+                Log Out
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- BOTTOM NAV -->
+
+    <nav class="bottom-nav">
+
+        <button
+            id="navHome"
+            class="nav-btn active"
+            onclick="showPage('home')"
+        >
+
+            <span class="nav-icon">
+                🏠
+            </span>
+
+            Home
+
+        </button>
+
+
+        <button
+            id="navDiscover"
+            class="nav-btn"
+            onclick="showPage('discover')"
+        >
+
+            <span class="nav-icon">
+                🔎
+            </span>
+
+            Discover
+
+        </button>
+
+
+        <button
+            id="navMessages"
+            class="nav-btn"
+            onclick="showPage('messages')"
+        >
+
+            <span class="nav-icon">
+                💬
+            </span>
+
+            Messages
+
+        </button>
+
+
+        <button
+            id="navProfile"
+            class="nav-btn"
+            onclick="showPage('profile')"
+        >
+
+            <span class="nav-icon">
+                👤
+            </span>
+
+            Profile
+
+        </button>
+
+
+        <button
+            id="navSettings"
+            class="nav-btn"
+            onclick="showPage('settings')"
+        >
+
+            <span class="nav-icon">
+                ⚙️
+            </span>
+
+            Settings
+
+        </button>
+
+    </nav>
+
+</div>
+
+
+<!-- =========================
+     CREATE POST MODAL
+========================= -->
+
+<div
+    id="createModal"
+    class="modal hidden"
+>
+
+    <div class="modal-card">
+
+        <div class="modal-header">
+
+            <h2>
+                Create Post
+            </h2>
+
+            <button
+                class="icon-btn"
+                onclick="closeCreatePost()"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div class="field">
+
+            <label>
+                What's happening?
+            </label>
+
+            <textarea
+                id="postBody"
+                placeholder="Share something with CONNECTIVA..."
+            ></textarea>
+
+        </div>
+
+
+        <button
+            class="primary-btn"
+            onclick="createPost()"
+        >
+            Publish Post
+        </button>
+
+
+        <div
+            id="postMessage"
+            class="auth-message"
+        ></div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   SUPABASE CONFIGURATION
+========================================================= */
+
+const SUPABASE_URL =
+    "https://mrzlxirhwwtqzigjqqkd.supabase.co";
+
+const SUPABASE_PUBLISHABLE_KEY =
+    "sb_publishable_zcl7cHBt-q-cSITBSik4Bg_cHWnK7Cq";
+
+const client =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
+    );
+
+
+/* =========================================================
+   GLOBAL STATE
+========================================================= */
+
+let currentUser = null;
+let currentProfile = null;
+let authMode = "login";
+
+
+/* =========================================================
+   AUTH MODE
+========================================================= */
+
+function showAuthMode(mode){
+
+    authMode = mode;
+
+    const loginTab =
+        document.getElementById("loginTab");
+
+    const signupTab =
+        document.getElementById("signupTab");
+
+    const signupFields =
+        document.getElementById("signupFields");
+
+    const authButton =
+        document.getElementById("authButton");
+
+
+    if(mode === "login"){
+
+        loginTab.classList.add("active");
+        signupTab.classList.remove("active");
+
+        signupFields.classList.add("hidden");
+
+        authButton.textContent =
+            "Login";
+
+    }else{
+
+        signupTab.classList.add("active");
+        loginTab.classList.remove("active");
+
+        signupFields.classList.remove("hidden");
+
+        authButton.textContent =
+            "Create Account";
+
+    }
+
+}
+
+
+/* =========================================================
+   AUTH SUBMIT
+========================================================= */
+
+async function submitAuth(){
+
+    const email =
+        document
+        .getElementById("authEmail")
+        .value
+        .trim();
+
+    const password =
+        document
+        .getElementById("authPassword")
+        .value;
+
+    const message =
+        document
+        .getElementById("authMessage");
+
+
+    message.textContent = "";
+
+
+    if(!email || !password){
+
+        message.textContent =
+            "Please enter your email and password.";
+
+        return;
+    }
+
+
+    try{
+
+        if(authMode === "signup"){
+
+            const displayName =
+                document
+                .getElementById("signupName")
+                .value
+                .trim();
+
+            const username =
+                document
+                .getElementById("signupUsername")
+                .value
+                .trim()
+                .toLowerCase();
+
+
+            if(!displayName || !username){
+
+                message.textContent =
+                    "Please enter your display name and username.";
+
+                return;
+            }
+
+
+            const {data,error} =
+                await client.auth.signUp({
+
+                    email:email,
+
+                    password:password,
+
+                    options:{
+                        data:{
+                            display_name:displayName,
+                            username:username
+                        }
+                    }
+
+                });
+
+
+            if(error){
+
+                throw error;
+
+            }
+
+
+            if(data.user && !data.session){
+
+                message.textContent =
+                    "Account created. Please check your email and confirm your account.";
+
+                return;
+
+            }
+
+
+            if(data.session){
+
+                await initializeApp();
+
+            }
+
+        }else{
+
+            const {data,error} =
+                await client.auth.signInWithPassword({
+
+                    email:email,
+
+                    password:password
+
+                });
+
+
+            if(error){
+
+                throw error;
+
+            }
+
+
+            if(data.session){
+
+                await initializeApp();
+
+            }
+
+        }
+
+    }catch(error){
+
+        console.error(
+            "Authentication error:",
+            error
+        );
+
+        message.textContent =
+            error.message ||
+            "Authentication failed.";
+
+    }
+
+}
+
+
+/* =========================================================
+   CHECK SESSION
+========================================================= */
+
+async function checkSession(){
+
+    try{
+
+        const {data,error} =
+            await client.auth.getSession();
+
+
+        if(error){
+
+            console.error(error);
+
+            return;
+
+        }
+
+
+        if(data.session){
+
+            await initializeApp();
+
+        }
+
+    }catch(error){
+
+        console.error(error);
+
+    }
+
+}
+
+
+/* =========================================================
+   INITIALIZE APP
+========================================================= */
+
+async function initializeApp(){
+
+    const {data,error} =
+        await client.auth.getUser();
+
+
+    if(error){
+
+        console.error(error);
+
+        return;
+
+    }
+
+
+    currentUser =
+        data.user;
+
+
+    if(!currentUser){
+
+        return;
+
+    }
+
+
+    document
+        .getElementById("authScreen")
+        .classList.add("hidden");
+
+
+    document
+        .getElementById("app")
+        .classList.remove("hidden");
+
+
+    await loadUserProfile();
+
+    await loadFeed();
+
+    await loadMyPosts();
+
+    updateAccountDisplay();
+
+}
+
+
+/* =========================================================
+   LOAD PROFILE
+========================================================= */
+
+async function loadUserProfile(){
+
+    if(!currentUser){
+
+        return;
+
+    }
+
+
+    const {data,error} =
+        await client
+        .from("profiles")
+        .select("*")
+        .eq("id",currentUser.id)
+        .maybeSingle();
+
+
+    if(error){
+
+        console.error(
+            "Profile error:",
+            error
+        );
+
+        return;
+
+    }
+
+
+    currentProfile =
+        data;
+
+
+    if(!currentProfile){
+
+        console.warn(
+            "No profile found."
+        );
+
+        return;
+
+    }
+
+
+    updateProfileUI();
+
+}
+
+
+/* =========================================================
+   PROFILE UI
+========================================================= */
+
+function getInitials(name){
+
+    if(!name){
+
+        return "C";
+
+    }
+
+
+    return name
+        .split(" ")
+        .filter(Boolean)
+        .slice(0,2)
+        .map(
+            x => x[0].toUpperCase()
+        )
+        .join("");
+
+}
+
+
+function updateProfileUI(){
+
+    if(!currentProfile){
+
+        return;
+
+    }
+
+
+    const displayName =
+        currentProfile.display_name ||
+        currentProfile.username ||
+        "CONNECTIVA User";
+
+
+    const username =
+        currentProfile.username ||
+        "user";
+
+
+    document
+        .getElementById("profileName")
+        .textContent =
+            displayName;
+
+
+    document
+        .getElementById("profileUsername")
+        .textContent =
+            "@" + username;
+
+
+    document
+        .getElementById("profileBio")
+        .textContent =
+            currentProfile.bio ||
+            "Welcome to CONNECTIVA.";
+
+
+    const initials =
+        getInitials(displayName);
+
+
+    document
+        .getElementById("profileAvatar")
+        .textContent =
+            initials;
+
+
+    document
+        .getElementById("homeMiniAvatar")
+        .textContent =
+            initials;
+
+}
+
+
+/* =========================================================
+   ACCOUNT DISPLAY
+========================================================= */
+
+function updateAccountDisplay(){
+
+    document
+        .getElementById("settingsEmail")
+        .textContent =
+            currentUser?.email || "—";
+
+
+    document
+        .getElementById("settingsRole")
+        .textContent =
+            currentProfile?.role || "user";
+
+}
+
+
+/* =========================================================
+   LOAD FEED
+========================================================= */
+
+async function loadFeed(){
+
+    const feed =
+        document.getElementById("feed");
+
+
+    feed.innerHTML =
+        '<div class="loading">Loading posts...</div>';
+
+
+    const {data,error} =
+        await client
+        .from("posts")
+        .select(`
+            id,
+            author_id,
+            body,
+            media_url,
+            created_at,
+            privacy,
+            profiles:author_id(
+                id,
+                username,
+                display_name,
+                avatar_url
+            )
+        `)
+        .order(
+            "created_at",
+            {
+                ascending:false
+            }
+        )
+        .limit(50);
+
+
+    if(error){
+
+        console.error(
+            "Feed error:",
+            error
+        );
+
+
+        feed.innerHTML =
+            `<div class="empty">
+                Could not load posts.<br><br>
+                ${escapeHtml(error.message)}
+            </div>`;
+
+
+        return;
+
+    }
+
+
+    if(!data || data.length === 0){
+
+        feed.innerHTML =
+            `<div class="empty">
+                No posts yet.<br>
+                Be the first to post on CONNECTIVA.
+            </div>`;
+
+
+        return;
+
+    }
+
+
+    feed.innerHTML =
+        data
+        .map(post => renderPost(post))
+        .join("");
+
+}
+
+
+/* =========================================================
+   RENDER POST
+========================================================= */
+
+function renderPost(post){
+
+    const profile =
+        post.profiles || {};
+
+
+    const displayName =
+        profile.display_name ||
+        profile.username ||
+        "CONNECTIVA User";
+
+
+    const username =
+        profile.username ||
+        "user";
+
+
+    const initials =
+        getInitials(displayName);
+
+
+    const date =
+        formatDate(post.created_at);
+
+
+    const isMine =
+        currentUser &&
+        post.author_id === currentUser.id;
+
+
+    return `
+        <article class="post">
+
+            <div class="post-header">
+
+                <div class="mini-avatar">
+                    ${escapeHtml(initials)}
+                </div>
+
+                <div class="post-author">
+
+                    <strong>
+                        ${escapeHtml(displayName)}
+                    </strong>
+
+                    <span>
+                        @${escapeHtml(username)}
+                        ·
+                        ${escapeHtml(date)}
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="post-body">
+                ${escapeHtml(post.body || "")}
+            </div>
+
+
+            <div class="post-actions">
+
+                <button
+                    onclick="likePost('${post.id}')"
+                >
+                    ♡ Like
+                </button>
+
+                <button
+                    onclick="savePost('${post.id}')"
+                >
+                    🔖 Save
+                </button>
+
+                ${
+                    isMine
+                    ?
+                    `<button
+                        onclick="deletePost('${post.id}')"
+                    >
+                        🗑 Delete
+                    </button>`
+                    :
+                    `<button
+                        onclick="reportPost('${post.id}')"
+                    >
+                        ⚑ Report
+                    </button>`
+                }
+
+            </div>
+
+        </article>
+    `;
+
+}
+
+
+/* =========================================================
+   CREATE POST MODAL
+========================================================= */
+
+function openCreatePost(){
+
+    document
+        .getElementById("createModal")
+        .classList.remove("hidden");
+
+
+    document
+        .getElementById("postBody")
+        .focus();
+
+}
+
+
+function closeCreatePost(){
+
+    document
+        .getElementById("createModal")
+        .classList.add("hidden");
+
+
+    document
+        .getElementById("postMessage")
+        .textContent = "";
+
+}
+
+
+/* =========================================================
+   CREATE REAL POST
+========================================================= */
+
+async function createPost(){
+
+    const body =
+        document
+        .getElementById("postBody")
+        .value
+        .trim();
+
+
+    const message =
+        document
+        .getElementById("postMessage");
+
+
+    try{
+
+        message.textContent =
+            "Checking authentication...";
+
+
+        const {data:sessionData,error:sessionError} =
+            await client.auth.getSession();
+
+
+        if(sessionError){
+
+            throw sessionError;
+
+        }
+
+
+        const session =
+            sessionData.session;
+
+
+        if(!session || !session.user){
+
+            throw new Error(
+                "No authenticated browser session found."
+            );
+
+        }
+
+
+        const authenticatedUser =
+            session.user;
+
+
+        if(!body){
+
+            throw new Error(
+                "Post cannot be empty."
+            );
+
+        }
+
+
+        message.textContent =
+            "Creating post...";
+
+
+        const {data,error} =
+            await client
+            .from("posts")
+            .insert({
+
+                author_id:
+                    authenticatedUser.id,
+
+                body:
+                    body,
+
+                privacy:
+                    "public"
+
+            })
+            .select()
+            .single();
+
+
+        if(error){
+
+            console.error(
+                "CREATE POST ERROR:",
+                error
+            );
+
+            throw error;
+
+        }
+
+
+        console.log(
+            "POST CREATED:",
+            data
+        );
+
+
+        document
+            .getElementById("postBody")
+            .value = "";
+
+
+        message.textContent =
+            "✅ Post created successfully.";
+
+
+        await loadFeed();
+
+        await loadMyPosts();
+
+
+        setTimeout(
+            () => closeCreatePost(),
+            700
+        );
+
+
+    }catch(error){
+
+        console.error(
+            "Could not create post:",
+            error
+        );
+
+
+        message.innerHTML =
+            `<strong style="color:#ff7777;">
+                Could not create post:
+            </strong><br>
+            ${escapeHtml(
+                error.message ||
+                String(error)
+            )}`;
+
+    }
+
+}
+
+
+/* =========================================================
+   DELETE POST
+========================================================= */
+
+async function deletePost(postId){
+
+    if(!confirm("Delete this post?")){
+
+        return;
+
+    }
+
+
+    const {error} =
+        await client
+        .from("posts")
+        .delete()
+        .eq("id",postId);
+
+
+    if(error){
+
+        alert(
+            "Could not delete post: " +
+            error.message
+        );
+
+        return;
+
+    }
+
+
+    await loadFeed();
+
+    await loadMyPosts();
+
+}
+
+
+/* =========================================================
+   LIKE POST
+========================================================= */
+
+async function likePost(postId){
+
+    if(!currentUser){
+
+        return;
+
+    }
+
+
+    const {data:existing,error:checkError} =
+        await client
+        .from("post_likes")
+        .select("id")
+        .eq(
+            "post_id",
+            postId
+        )
+        .eq(
+            "user_id",
+            currentUser.id
+        )
+        .maybeSingle();
+
+
+    if(checkError){
+
+        alert(
+            "Like error: " +
+            checkError.message
+        );
+
+        return;
+
+    }
+
+
+    if(existing){
+
+        const {error} =
+            await client
+            .from("post_likes")
+            .delete()
+            .eq("id",existing.id);
+
+
+        if(error){
+
+            alert(error.message);
+
+        }
+
+    }else{
+
+        const {error} =
+            await client
+            .from("post_likes")
+            .insert({
+
+                post_id:
+                    postId,
+
+                user_id:
+                    currentUser.id
+
+            });
+
+
+        if(error){
+
+            alert(error.message);
+
+        }
+
+    }
+
+}
+
+
+/* =========================================================
+   SAVE POST
+========================================================= */
+
+async function savePost(postId){
+
+    if(!currentUser){
+
+        return;
+
+    }
+
+
+    const {data:existing,error:checkError} =
+        await client
+        .from("saved_posts")
+        .select("id")
+        .eq(
+            "post_id",
+            postId
+        )
+        .eq(
+            "user_id",
+            currentUser.id
+        )
+        .maybeSingle();
+
+
+    if(checkError){
+
+        alert(
+            "Save error: " +
+            checkError.message
+        );
+
+        return;
+
+    }
+
+
+    if(existing){
+
+        const {error} =
+            await client
+            .from("saved_posts")
+            .delete()
+            .eq(
+                "id",
+                existing.id
+            );
+
+
+        if(error){
+
+            alert(error.message);
+
+        }
+
+    }else{
+
+        const {error} =
+            await client
+            .from("saved_posts")
+            .insert({
+
+                post_id:
+                    postId,
+
+                user_id:
+                    currentUser.id
+
+            });
+
+
+        if(error){
+
+            alert(error.message);
+
+        }
+
+    }
+
+}
+
+
+/* =========================================================
+   REPORT
+========================================================= */
+
+async function reportPost(postId){
+
+    if(!currentUser){
+
+        return;
+
+    }
+
+
+    const reason =
+        prompt(
+            "Why are you reporting this post?"
+        );
+
+
+    if(!reason){
+
+        return;
+
+    }
+
+
+    const {error} =
+        await client
+        .from("reports")
+        .insert({
+
+            reporter_id:
+                currentUser.id,
+
+            post_id:
+                postId,
+
+            reason:
+                reason,
+
+            status:
+                "pending"
+
+        });
+
+
+    if(error){
+
+        alert(
+            "Could not submit report: " +
+            error.message
+        );
+
+        return;
+
+    }
+
+
+    alert(
+        "Report submitted."
+    );
+
+}
+
+
+/* =========================================================
+   MY POSTS
+========================================================= */
+
+async function loadMyPosts(){
+
+    if(!currentUser){
+
+        return;
+
+    }
+
+
+    const container =
+        document.getElementById("myPosts");
+
+
+    const {data,error} =
+        await client
+        .from("posts")
+        .select(`
+            id,
+            author_id,
+            body,
+            media_url,
+            created_at,
+            privacy,
+            profiles:author_id(
+                id,
+                username,
+                display_name,
+                avatar_url
+            )
+        `)
+        .eq(
+            "author_id",
+            currentUser.id
+        )
+        .order(
+            "created_at",
+            {
+                ascending:false
+            }
+        );
+
+
+    if(error){
+
+        container.innerHTML =
+            `<div class="empty">
+                ${escapeHtml(error.message)}
+            </div>`;
+
+        return;
+
+    }
+
+
+    if(!data || data.length === 0){
+
+        container.innerHTML =
+            `<div class="empty">
+                You haven't posted anything yet.
+            </div>`;
+
+        return;
+
+    }
+
+
+    container.innerHTML =
+        data
+        .map(renderPost)
+        .join("");
+
+}
+
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+async function searchUsers(){
+
+    const input =
+        document
+        .getElementById("searchInput")
+        .value
+        .trim();
+
+
+    const results =
+        document
+        .getElementById("searchResults");
+
+
+    if(!input){
+
+        results.innerHTML =
+            `<div class="empty">
+                Enter a name or username.
+            </div>`;
+
+        return;
+
+    }
+
+
+    results.innerHTML =
+        `<div class="loading">
+            Searching...
+        </div>`;
+
+
+    const search =
+        "%" + input + "%";
+
+
+    const {data,error} =
+        await client
+        .from("profiles")
+        .select(
+            "id,username,display_name,bio"
+        )
+        .or(
+            `username.ilike.${search},display_name.ilike.${search}`
+        )
+        .limit(20);
+
+
+    if(error){
+
+        results.innerHTML =
+            `<div class="empty">
+                ${escapeHtml(error.message)}
+            </div>`;
+
+        return;
+
+    }
+
+
+    if(!data || data.length === 0){
+
+        results.innerHTML =
+            `<div class="empty">
+                No users found.
+            </div>`;
+
+        return;
+
+    }
+
+
+    results.innerHTML =
+        data.map(user => {
+
+            const isSelf =
+                currentUser &&
+                user.id === currentUser.id;
+
+
+            return `
+                <div class="setting-card">
+
+                    <div style="
+                        display:flex;
+                        align-items:center;
+                        gap:12px;
+                    ">
+
+                        <div class="mini-avatar">
+                            ${escapeHtml(
+                                getInitials(
+                                    user.display_name ||
+                                    user.username
+                                )
+                            )}
+                        </div>
+
+                        <div style="flex:1;">
+
+                            <strong>
+                                ${escapeHtml(
+                                    user.display_name ||
+                                    user.username
+                                )}
+                            </strong>
+
+                            <div style="
+                                color:#777;
+                                font-size:12px;
+                                margin-top:3px;
+                            ">
+                                @${escapeHtml(
+                                    user.username
+                                )}
+                            </div>
+
+                        </div>
+
+                        ${
+                            !isSelf
+                            ?
+                            `<button
+                                class="secondary-btn"
+                                onclick="followUser('${user.id}')"
+                            >
+                                Follow
+                            </button>`
+                            :
+                            ""
+                        }
+
+                    </div>
+
+                </div>
+            `;
+
+        }).join("");
+
+}
+
+
+/* =========================================================
+   FOLLOW
+========================================================= */
+
+async function followUser(userId){
+
+    if(!currentUser){
+
+        return;
+
+    }
+
+
+    if(userId === currentUser.id){
+
+        return;
+
+    }
+
+
+    const {data:existing,error:checkError} =
+        await client
+        .from("follows")
+        .select("id")
+        .eq(
+            "follower_id",
+            currentUser.id
+        )
+        .eq(
+            "following_id",
+            userId
+        )
+        .maybeSingle();
+
+
+    if(checkError){
+
+        alert(
+            "Follow error: " +
+            checkError.message
+        );
+
+        return;
+
+    }
+
+
+    if(existing){
+
+        const {error} =
+            await client
+            .from("follows")
+            .delete()
+            .eq(
+                "id",
+                existing.id
+            );
+
+
+        if(error){
+
+            alert(error.message);
+
+        }else{
+
+            alert("Unfollowed.");
+
+        }
+
+    }else{
+
+        const {error} =
+            await client
+            .from("follows")
+            .insert({
+
+                follower_id:
+                    currentUser.id,
+
+                following_id:
+                    userId
+
+            });
+
+
+        if(error){
+
+            alert(error.message);
+
+        }else{
+
+            alert("Following.");
+
+        }
+
+    }
+
+}
+
+
+/* =========================================================
+   DIAGNOSTIC 1
+   POSTS INSERT CONTEXT
+========================================================= */
+
+async function testPostsInsertContext(){
+
+    const resultBox =
+        document.getElementById(
+            "contextResult"
+        );
+
+
+    const output =
+        document.getElementById(
+            "contextOutput"
+        );
+
+
+    resultBox.classList.remove(
+        "hidden"
+    );
+
+
+    resultBox.classList.remove(
+        "success-box"
+    );
+
+
+    resultBox.classList.remove(
+        "error-box"
+    );
+
+
+    output.textContent =
+        "Running context test...";
+
+
+    try{
+
+        const {data:sessionData,error:sessionError} =
+            await client.auth.getSession();
+
+
+        if(sessionError){
+
+            throw sessionError;
+
+        }
+
+
+        const session =
+            sessionData.session;
+
+
+        if(!session || !session.user){
+
+            resultBox.classList.add(
+                "error-box"
+            );
+
+
+            output.textContent =
+                JSON.stringify({
+
+                    success:false,
+
+                    error:
+                        "No authenticated browser session."
+
+                },null,2);
+
+
+            return;
+
+        }
+
+
+        const browserUserId =
+            session.user.id;
+
+
+        const {data,error} =
+            await client.rpc(
+                "debug_posts_insert_context"
+            );
+
+
+        if(error){
+
+            throw error;
+
+        }
+
+
+        const result = {
+
+            browser_user_id:
+                browserUserId,
+
+            database_result:
+                data,
+
+            browser_database_ids_match:
+                data &&
+                data.auth_uid === browserUserId
+
+        };
+
+
+        output.textContent =
+            JSON.stringify(
+                result,
+                null,
+                2
+            );
+
+
+        if(
+            data &&
+            data.auth_uid === browserUserId &&
+            data.profile_exists === true &&
+            data.author_matches_auth_uid === true &&
+            data.insert_privilege === true
+        ){
+
+            resultBox.classList.add(
+                "success-box"
+            );
+
+        }else{
+
+            resultBox.classList.add(
+                "error-box"
+            );
+
+        }
+
+    }catch(error){
+
+        console.error(
+            "Context diagnostic error:",
+            error
+        );
+
+
+        resultBox.classList.add(
+            "error-box"
+        );
+
+
+        output.textContent =
+            JSON.stringify({
+
+                success:false,
+
+                error:
+                    error.message,
+
+                details:
+                    error
+
+            },null,2);
+
+    }
+
+}
+
+
+/* =========================================================
+   DIAGNOSTIC 2
+   POSTS RUNTIME
+========================================================= */
+
+async function testPostsRuntime(){
+
+    const resultBox =
+        document.getElementById(
+            "runtimeResult"
+        );
+
+
+    const output =
+        document.getElementById(
+            "runtimeOutput"
+        );
+
+
+    resultBox.classList.remove(
+        "hidden"
+    );
+
+
+    resultBox.classList.remove(
+        "success-box"
+    );
+
+
+    resultBox.classList.remove(
+        "error-box"
+    );
+
+
+    output.textContent =
+        "Checking PostgreSQL runtime...";
+
+
+    try{
+
+        const {data:sessionData,error:sessionError} =
+            await client.auth.getSession();
+
+
+        if(sessionError){
+
+            throw sessionError;
+
+        }
+
+
+        if(
+            !sessionData.session ||
+            !sessionData.session.user
+        ){
+
+            throw new Error(
+                "No authenticated browser session found."
+            );
+
+        }
+
+
+        const {data,error} =
+            await client.rpc(
+                "debug_posts_runtime"
+            );
+
+
+        if(error){
+
+            throw error;
+
+        }
+
+
+        output.textContent =
+            JSON.stringify(
+                data,
+                null,
+                2
+            );
+
+
+        if(data){
+
+            resultBox.classList.add(
+                "success-box"
+            );
+
+        }
+
+    }catch(error){
+
+        console.error(
+            "Runtime diagnostic error:",
+            error
+        );
+
+
+        resultBox.classList.add(
+            "error-box"
+        );
+
+
+        output.textContent =
+            JSON.stringify({
+
+                success:false,
+
+                error:
+                    error.message,
+
+                details:
+                    error
+
+            },null,2);
+
+    }
+
+}
+
+
+/* =========================================================
+   DIAGNOSTIC 3
+   REAL POST INSERT
+========================================================= */
+
+async function testRealPostInsert(){
+
+    const resultBox =
+        document.getElementById(
+            "realInsertResult"
+        );
+
+
+    const output =
+        document.getElementById(
+            "realInsertOutput"
+        );
+
+
+    resultBox.classList.remove(
+        "hidden"
+    );
+
+
+    resultBox.classList.remove(
+        "success-box"
+    );
+
+
+    resultBox.classList.add(
+        "error-box"
+    );
+
+
+    output.textContent =
+        "Running real database INSERT test...";
+
+
+    try{
+
+        const {data,error} =
+            await client.rpc(
+                "debug_test_post_insert"
+            );
+
+
+        if(error){
+
+            throw error;
+
+        }
+
+
+        output.textContent =
+            JSON.stringify(
+                data,
+                null,
+                2
+            );
+
+
+        if(
+            data &&
+            data.success === true
+        ){
+
+            resultBox.classList.remove(
+                "error-box"
+            );
+
+
+            resultBox.classList.add(
+                "success-box"
+            );
+
+        }
+
+    }catch(error){
+
+        console.error(
+            "Real insert diagnostic:",
+            error
+        );
+
+
+        output.textContent =
+            JSON.stringify({
+
+                success:false,
+
+                error:
+                    error.message,
+
+                details:
+                    error
+
+            },null,2);
+
+    }
+
+}
+
+
+/* =========================================================
+   DIAGNOSTIC 4
+   AUTH SESSION
+========================================================= */
+
+async function runDiagnostics(){
+
+    const box =
+        document.getElementById(
+            "sessionResult"
+        );
+
+
+    const output =
+        document.getElementById(
+            "sessionOutput"
+        );
+
+
+    box.classList.remove(
+        "hidden"
+    );
+
+
+    output.textContent =
+        "Checking authentication...";
+
+
+    try{
+
+        const {data:sessionData,error:sessionError} =
+            await client.auth.getSession();
+
+
+        if(sessionError){
+
+            throw sessionError;
+
+        }
+
+
+        const session =
+            sessionData.session;
+
+
+        let rpcResult =
+            null;
+
+
+        let rpcError =
+            null;
+
+
+        if(session){
+
+            const rpc =
+                await client.rpc(
+                    "debug_connectiva_auth"
+                );
+
+
+            rpcResult =
+                rpc.data;
+
+
+            rpcError =
+                rpc.error;
+
+        }
+
+
+        output.textContent =
+            JSON.stringify({
+
+                supabase_url:
+                    SUPABASE_URL,
+
+                browser_session_exists:
+                    !!session,
+
+                browser_user_id:
+                    session?.user?.id ||
+                    null,
+
+                browser_email:
+                    session?.user?.email ||
+                    null,
+
+                jwt_present:
+                    !!session?.access_token,
+
+                database_auth_check:
+                    rpcResult,
+
+                database_auth_error:
+                    rpcError?.message ||
+                    null
+
+            },null,2);
+
+    }catch(error){
+
+        output.textContent =
+            JSON.stringify({
+
+                success:false,
+
+                error:
+                    error.message
+
+            },null,2);
+
+    }
+
+}
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+function showPage(page){
+
+    const pages = {
+
+        home:
+            document.getElementById(
+                "homePage"
+            ),
+
+        discover:
+            document.getElementById(
+                "discoverPage"
+            ),
+
+        messages:
+            document.getElementById(
+                "messagesPage"
+            ),
+
+        notifications:
+            document.getElementById(
+                "notificationsPage"
+            ),
+
+        profile:
+            document.getElementById(
+                "profilePage"
+            ),
+
+        settings:
+            document.getElementById(
+                "settingsPage"
+            )
+
+    };
+
+
+    Object.values(pages)
+        .forEach(
+            element =>
+                element.classList.add(
+                    "hidden"
+                )
+        );
+
+
+    if(pages[page]){
+
+        pages[page]
+            .classList.remove(
+                "hidden"
+            );
+
+    }
+
+
+    document
+        .querySelectorAll(".nav-btn")
+        .forEach(
+            button =>
+                button.classList.remove(
+                    "active"
+                )
+        );
+
+
+    const navMap = {
+
+        home:
+            "navHome",
+
+        discover:
+            "navDiscover",
+
+        messages:
+            "navMessages",
+
+        profile:
+            "navProfile",
+
+        settings:
+            "navSettings"
+
+    };
+
+
+    if(navMap[page]){
+
+        document
+            .getElementById(
+                navMap[page]
+            )
+            .classList.add(
+                "active"
+            );
+
+    }
+
+
+    if(page === "profile"){
+
+        loadMyPosts();
+
+    }
+
+}
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+async function logout(){
+
+    const {error} =
+        await client.auth.signOut();
+
+
+    if(error){
+
+        alert(error.message);
+
+        return;
+
+    }
+
+
+    currentUser =
+        null;
+
+
+    currentProfile =
+        null;
+
+
+    document
+        .getElementById("app")
+        .classList.add(
+            "hidden"
+        );
+
+
+    document
+        .getElementById("authScreen")
+        .classList.remove(
+            "hidden"
+        );
+
+}
+
+
+/* =========================================================
+   UTILITIES
+========================================================= */
+
+function formatDate(value){
+
+    if(!value){
+
+        return "";
+
+    }
+
+
+    const date =
+        new Date(value);
+
+
+    return date.toLocaleString(
+        undefined,
+        {
+            dateStyle:"medium",
+            timeStyle:"short"
+        }
+    );
+
+}
+
+
+function escapeHtml(value){
+
+    if(
+        value === null ||
+        value === undefined
+    ){
+
+        return "";
+
+    }
+
+
+    return String(value)
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+/* =========================================================
+   AUTH STATE LISTENER
+========================================================= */
+
+client.auth.onAuthStateChange(
+    async (event,session) => {
+
+        console.log(
+            "CONNECTIVA AUTH EVENT:",
+            event
+        );
+
+
+        if(
+            session &&
+            !currentUser
+        ){
+
+            await initializeApp();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   START
+========================================================= */
+
+checkSession();
+
+</script>
+
+</body>
+</html>
