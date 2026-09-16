@@ -1,0 +1,3068 @@
+<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b0b0d" />
+  <meta name="description" content="CONNECTIVA — Connect. Share. Discover." />
+  <title>CONNECTIVA</title>
+
+  <!-- Supabase JS v2 -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    :root {
+      --bg: #08090b;
+      --bg-soft: #101114;
+      --surface: #14161a;
+      --surface-2: #1b1e23;
+      --surface-3: #22262d;
+      --border: rgba(255,255,255,.09);
+      --border-strong: rgba(255,255,255,.16);
+      --text: #f5f7fa;
+      --muted: #9298a3;
+      --muted-2: #6f7580;
+      --accent: #7c5cff;
+      --accent-2: #9b86ff;
+      --danger: #ff5d73;
+      --success: #35d39a;
+      --warning: #f4c95d;
+      --radius: 18px;
+      --radius-sm: 12px;
+      --max: 1180px;
+      --shadow: 0 18px 50px rgba(0,0,0,.28);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 15% 0%, rgba(124,92,255,.12), transparent 28%),
+        radial-gradient(circle at 90% 10%, rgba(60,170,255,.08), transparent 25%),
+        var(--bg);
+      color: var(--text);
+      font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+      line-height: 1.5;
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .app-shell {
+      min-height: 100vh;
+    }
+
+    /* =========================
+       AUTH
+    ========================= */
+
+    .auth-screen {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    .auth-layout {
+      width: min(1040px, 100%);
+      display: grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap: 20px;
+    }
+
+    .auth-hero,
+    .auth-card {
+      border: 1px solid var(--border);
+      background: rgba(20,22,26,.82);
+      backdrop-filter: blur(20px);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+    }
+
+    .auth-hero {
+      padding: 46px;
+      min-height: 570px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .auth-hero::before {
+      content: "";
+      position: absolute;
+      width: 330px;
+      height: 330px;
+      border-radius: 50%;
+      background: rgba(124,92,255,.18);
+      filter: blur(40px);
+      right: -100px;
+      top: -100px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 900;
+      letter-spacing: -.03em;
+      font-size: 22px;
+    }
+
+    .brand-mark {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      color: white;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--accent), #4a36c7);
+      box-shadow: 0 10px 30px rgba(124,92,255,.35);
+    }
+
+    .hero-title {
+      max-width: 620px;
+      font-size: clamp(42px, 6vw, 74px);
+      line-height: .98;
+      letter-spacing: -.055em;
+      margin-top: 50px;
+    }
+
+    .hero-title span {
+      color: var(--accent-2);
+    }
+
+    .hero-description {
+      color: var(--muted);
+      font-size: 16px;
+      max-width: 520px;
+      margin-top: 22px;
+    }
+
+    .hero-points {
+      display: grid;
+      gap: 12px;
+      color: #cfd3da;
+    }
+
+    .hero-point {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .hero-point i {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 18px var(--accent);
+    }
+
+    .auth-card {
+      padding: 34px;
+      align-self: center;
+    }
+
+    .auth-card h2 {
+      font-size: 30px;
+      letter-spacing: -.03em;
+      margin-bottom: 8px;
+    }
+
+    .auth-subtitle {
+      color: var(--muted);
+      margin-bottom: 26px;
+    }
+
+    .auth-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      padding: 4px;
+      background: var(--surface-2);
+      border-radius: 12px;
+      margin-bottom: 22px;
+    }
+
+    .auth-tab {
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      padding: 11px;
+      border-radius: 9px;
+      font-weight: 700;
+    }
+
+    .auth-tab.active {
+      color: white;
+      background: var(--surface-3);
+    }
+
+    .field {
+      margin-bottom: 15px;
+    }
+
+    .field label {
+      display: block;
+      color: #c9cdd4;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 7px;
+    }
+
+    .input,
+    .textarea,
+    .select {
+      width: 100%;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.045);
+      color: var(--text);
+      outline: none;
+      border-radius: 12px;
+      padding: 13px 14px;
+      transition: .2s ease;
+    }
+
+    .input:focus,
+    .textarea:focus,
+    .select:focus {
+      border-color: rgba(124,92,255,.75);
+      box-shadow: 0 0 0 4px rgba(124,92,255,.1);
+    }
+
+    .textarea {
+      resize: vertical;
+      min-height: 130px;
+    }
+
+    .select option {
+      background: #15171b;
+      color: white;
+    }
+
+    .primary-btn,
+    .secondary-btn,
+    .danger-btn,
+    .icon-btn {
+      border: 0;
+      border-radius: 12px;
+      transition: transform .18s ease, opacity .18s ease, background .18s ease;
+    }
+
+    .primary-btn:hover,
+    .secondary-btn:hover,
+    .danger-btn:hover,
+    .icon-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .primary-btn {
+      width: 100%;
+      padding: 14px;
+      color: white;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--accent), #5940d9);
+      box-shadow: 0 12px 30px rgba(124,92,255,.2);
+    }
+
+    .secondary-btn {
+      padding: 10px 14px;
+      color: white;
+      background: var(--surface-3);
+      border: 1px solid var(--border);
+    }
+
+    .danger-btn {
+      padding: 10px 14px;
+      color: white;
+      background: rgba(255,93,115,.12);
+      border: 1px solid rgba(255,93,115,.2);
+    }
+
+    .auth-message {
+      min-height: 22px;
+      margin-top: 14px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    /* =========================
+       APP
+    ========================= */
+
+    .main-app {
+      min-height: 100vh;
+      padding-bottom: 90px;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      height: 68px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(8,9,11,.82);
+      backdrop-filter: blur(18px);
+    }
+
+    .topbar-inner {
+      max-width: var(--max);
+      height: 100%;
+      margin: auto;
+      padding: 0 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .top-search {
+      flex: 1;
+      max-width: 440px;
+      position: relative;
+    }
+
+    .top-search input {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: white;
+      border-radius: 999px;
+      padding: 11px 16px 11px 42px;
+      outline: none;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .icon-btn {
+      width: 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+      color: #d8dbe0;
+      background: transparent;
+      border: 1px solid transparent;
+      font-size: 18px;
+    }
+
+    .icon-btn:hover {
+      background: var(--surface);
+      border-color: var(--border);
+    }
+
+    .user-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: white;
+      font-weight: 800;
+      background: linear-gradient(135deg, #7c5cff, #2e9fff);
+      overflow: hidden;
+      flex: 0 0 auto;
+    }
+
+    .user-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .layout {
+      max-width: var(--max);
+      margin: auto;
+      padding: 24px 18px;
+      display: grid;
+      grid-template-columns: 210px minmax(0, 1fr) 250px;
+      gap: 24px;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 92px;
+      height: fit-content;
+    }
+
+    .nav-card,
+    .side-card {
+      background: rgba(20,22,26,.78);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 10px;
+    }
+
+    .nav-item {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      border-radius: 12px;
+      font-weight: 700;
+      text-align: left;
+    }
+
+    .nav-item:hover,
+    .nav-item.active {
+      color: white;
+      background: var(--surface-3);
+    }
+
+    .nav-item.active {
+      box-shadow: inset 3px 0 0 var(--accent);
+    }
+
+    .nav-icon {
+      width: 24px;
+      text-align: center;
+    }
+
+    .main-column {
+      min-width: 0;
+    }
+
+    .right-column {
+      position: sticky;
+      top: 92px;
+      height: fit-content;
+      display: grid;
+      gap: 14px;
+    }
+
+    /* =========================
+       PAGES
+    ========================= */
+
+    .page {
+      display: none;
+      animation: pageIn .2s ease;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    @keyframes pageIn {
+      from {
+        opacity: 0;
+        transform: translateY(5px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .page-header {
+      margin-bottom: 18px;
+    }
+
+    .page-header h1 {
+      font-size: 30px;
+      letter-spacing: -.04em;
+    }
+
+    .page-header p {
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    /* =========================
+       CREATE POST
+    ========================= */
+
+    .composer {
+      background: rgba(20,22,26,.82);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .composer-top {
+      display: flex;
+      gap: 12px;
+    }
+
+    .composer textarea {
+      flex: 1;
+      min-height: 75px;
+      border: 0;
+      background: transparent;
+      color: white;
+      resize: none;
+      outline: none;
+      padding: 7px 0;
+    }
+
+    .composer textarea::placeholder {
+      color: var(--muted-2);
+    }
+
+    .composer-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+    }
+
+    .composer-tools {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .composer-tool {
+      border: 1px solid var(--border);
+      background: var(--surface-2);
+      color: #cdd1d8;
+      border-radius: 10px;
+      padding: 8px 10px;
+      font-size: 12px;
+    }
+
+    .composer-tool:hover {
+      background: var(--surface-3);
+    }
+
+    .publish-btn {
+      border: 0;
+      background: var(--accent);
+      color: white;
+      font-weight: 800;
+      border-radius: 10px;
+      padding: 9px 15px;
+    }
+
+    /* =========================
+       POSTS
+    ========================= */
+
+    .feed {
+      display: grid;
+      gap: 14px;
+    }
+
+    .post {
+      background: rgba(20,22,26,.82);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .post-header {
+      padding: 15px;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+    }
+
+    .post-author {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .post-author strong {
+      display: block;
+      font-size: 14px;
+    }
+
+    .post-meta {
+      color: var(--muted-2);
+      font-size: 12px;
+      margin-top: 1px;
+    }
+
+    .post-menu {
+      position: relative;
+    }
+
+    .post-body {
+      padding: 0 15px 15px;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      color: #e6e8ec;
+    }
+
+    .post-media {
+      width: 100%;
+      max-height: 560px;
+      object-fit: cover;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: #0b0c0f;
+    }
+
+    .post-footer {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 10px;
+    }
+
+    .post-action {
+      flex: 1;
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      padding: 9px 5px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .post-action:hover {
+      color: white;
+      background: var(--surface-2);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 55px 20px;
+      color: var(--muted);
+      border: 1px dashed var(--border-strong);
+      border-radius: var(--radius);
+    }
+
+    .empty-state-icon {
+      font-size: 36px;
+      margin-bottom: 10px;
+    }
+
+    /* =========================
+       PROFILE
+    ========================= */
+
+    .profile-card {
+      overflow: hidden;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: rgba(20,22,26,.82);
+    }
+
+    .profile-cover {
+      height: 180px;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(124,92,255,.65), transparent 30%),
+        radial-gradient(circle at 80% 10%, rgba(50,180,255,.55), transparent 35%),
+        linear-gradient(135deg, #1b153c, #111827);
+    }
+
+    .profile-info {
+      padding: 0 20px 22px;
+    }
+
+    .profile-avatar-wrap {
+      margin-top: -46px;
+      margin-bottom: 12px;
+    }
+
+    .profile-avatar {
+      width: 92px;
+      height: 92px;
+      border-radius: 50%;
+      border: 5px solid var(--bg);
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      background: linear-gradient(135deg, #7c5cff, #2e9fff);
+      font-size: 30px;
+      font-weight: 900;
+    }
+
+    .profile-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .profile-name {
+      font-size: 25px;
+      font-weight: 900;
+      letter-spacing: -.03em;
+    }
+
+    .profile-email {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .profile-stats {
+      display: flex;
+      gap: 25px;
+      margin-top: 18px;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 19px;
+    }
+
+    .stat span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    /* =========================
+       DISCOVER
+    ========================= */
+
+    .discover-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .discover-card {
+      min-height: 160px;
+      padding: 20px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background:
+        linear-gradient(145deg, rgba(124,92,255,.16), rgba(255,255,255,.025));
+    }
+
+    .discover-card h3 {
+      margin-top: 35px;
+    }
+
+    .discover-card p {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 4px;
+    }
+
+    /* =========================
+       MESSAGES
+    ========================= */
+
+    .messages-card {
+      min-height: 480px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: rgba(20,22,26,.82);
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 30px;
+    }
+
+    .messages-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+    }
+
+    .messages-card p {
+      color: var(--muted);
+      max-width: 430px;
+      margin: 8px auto 20px;
+    }
+
+    /* =========================
+       RIGHT SIDEBAR
+    ========================= */
+
+    .side-card {
+      padding: 16px;
+    }
+
+    .side-card h3 {
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+
+    .side-user {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .side-user-info {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .side-user-info strong {
+      font-size: 13px;
+      display: block;
+    }
+
+    .side-user-info span {
+      color: var(--muted);
+      font-size: 11px;
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .side-follow {
+      border: 0;
+      color: var(--accent-2);
+      background: transparent;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .footer-note {
+      color: var(--muted-2);
+      font-size: 11px;
+      line-height: 1.6;
+      padding: 4px;
+    }
+
+    /* =========================
+       MODAL
+    ========================= */
+
+    .modal-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: none;
+      place-items: center;
+      padding: 18px;
+      background: rgba(0,0,0,.68);
+      backdrop-filter: blur(8px);
+    }
+
+    .modal-layer.open {
+      display: grid;
+    }
+
+    .modal {
+      width: min(560px, 100%);
+      max-height: min(760px, 92vh);
+      overflow: auto;
+      border: 1px solid var(--border);
+      background: #131519;
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      padding: 22px;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .modal-header h2 {
+      font-size: 21px;
+    }
+
+    .close-btn {
+      border: 0;
+      background: var(--surface-2);
+      color: white;
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    /* =========================
+       TOAST
+    ========================= */
+
+    .toast-container {
+      position: fixed;
+      z-index: 200;
+      right: 18px;
+      bottom: 18px;
+      display: grid;
+      gap: 8px;
+      width: min(360px, calc(100vw - 36px));
+    }
+
+    .toast {
+      padding: 13px 15px;
+      border-radius: 13px;
+      border: 1px solid var(--border);
+      background: #17191e;
+      box-shadow: var(--shadow);
+      color: #e9ebef;
+      font-size: 13px;
+      animation: toastIn .2s ease;
+    }
+
+    .toast.success {
+      border-color: rgba(53,211,154,.3);
+    }
+
+    .toast.error {
+      border-color: rgba(255,93,115,.35);
+    }
+
+    @keyframes toastIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* =========================
+       MOBILE NAV
+    ========================= */
+
+    .mobile-nav {
+      display: none;
+      position: fixed;
+      z-index: 60;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 68px;
+      background: rgba(10,11,14,.94);
+      border-top: 1px solid var(--border);
+      backdrop-filter: blur(18px);
+      padding: 6px;
+    }
+
+    .mobile-nav-inner {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      height: 100%;
+    }
+
+    .mobile-nav button {
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 10px;
+    }
+
+    .mobile-nav button.active {
+      color: white;
+      background: var(--surface-2);
+    }
+
+    .mobile-nav-icon {
+      display: block;
+      font-size: 19px;
+      margin-bottom: 2px;
+    }
+
+    /* =========================
+       RESPONSIVE
+    ========================= */
+
+    @media (max-width: 1000px) {
+      .layout {
+        grid-template-columns: 190px minmax(0,1fr);
+      }
+
+      .right-column {
+        display: none;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .auth-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .auth-hero {
+        display: none;
+      }
+
+      .auth-card {
+        max-width: 520px;
+        width: 100%;
+        margin: auto;
+      }
+
+      .layout {
+        display: block;
+        padding: 18px 12px 82px;
+      }
+
+      .sidebar {
+        display: none;
+      }
+
+      .mobile-nav {
+        display: block;
+      }
+
+      .top-search {
+        display: none;
+      }
+
+      .topbar-inner {
+        padding: 0 12px;
+      }
+
+      .top-actions .desktop-only {
+        display: none;
+      }
+
+      .discover-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .page-header h1 {
+        font-size: 26px;
+      }
+
+      .composer-footer {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .publish-btn {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 430px) {
+      .auth-screen {
+        padding: 12px;
+      }
+
+      .auth-card {
+        padding: 23px;
+      }
+
+      .post-footer {
+        gap: 0;
+      }
+
+      .post-action {
+        font-size: 12px;
+      }
+
+      .profile-stats {
+        gap: 16px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ============================================================
+       AUTH SCREEN
+  ============================================================= -->
+  <section id="authScreen" class="auth-screen">
+    <div class="auth-layout">
+
+      <div class="auth-hero">
+        <div>
+          <div class="brand">
+            <div class="brand-mark">C</div>
+            <span>CONNECTIVA</span>
+          </div>
+
+          <h1 class="hero-title">
+            Connect.<br />
+            Share.<br />
+            <span>Discover.</span>
+          </h1>
+
+          <p class="hero-description">
+            A modern social space designed around people, conversations,
+            ideas and discovery.
+          </p>
+        </div>
+
+        <div class="hero-points">
+          <div class="hero-point">
+            <i></i>
+            <span>Personal social feed</span>
+          </div>
+
+          <div class="hero-point">
+            <i></i>
+            <span>Secure account authentication</span>
+          </div>
+
+          <div class="hero-point">
+            <i></i>
+            <span>Privacy-aware posts</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="auth-card">
+        <div class="brand" style="margin-bottom:22px;">
+          <div class="brand-mark">C</div>
+          <span>CONNECTIVA</span>
+        </div>
+
+        <h2 id="authTitle">Welcome back</h2>
+        <p id="authSubtitle" class="auth-subtitle">
+          Sign in to continue to CONNECTIVA.
+        </p>
+
+        <div class="auth-tabs">
+          <button id="loginTab" class="auth-tab active" type="button">
+            Sign in
+          </button>
+
+          <button id="signupTab" class="auth-tab" type="button">
+            Create account
+          </button>
+        </div>
+
+        <form id="authForm">
+
+          <div id="nameField" class="field hidden">
+            <label for="authName">Display name</label>
+            <input
+              id="authName"
+              class="input"
+              type="text"
+              maxlength="60"
+              autocomplete="name"
+              placeholder="Your name"
+            />
+          </div>
+
+          <div class="field">
+            <label for="authEmail">Email</label>
+            <input
+              id="authEmail"
+              class="input"
+              type="email"
+              autocomplete="email"
+              required
+              placeholder="you@example.com"
+            />
+          </div>
+
+          <div class="field">
+            <label for="authPassword">Password</label>
+            <input
+              id="authPassword"
+              class="input"
+              type="password"
+              autocomplete="current-password"
+              minlength="6"
+              required
+              placeholder="At least 6 characters"
+            />
+          </div>
+
+          <button id="authSubmit" class="primary-btn" type="submit">
+            Sign in
+          </button>
+
+          <div id="authMessage" class="auth-message"></div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+       MAIN APP
+  ============================================================= -->
+  <section id="mainApp" class="main-app hidden">
+
+    <header class="topbar">
+      <div class="topbar-inner">
+
+        <div class="brand">
+          <div class="brand-mark">C</div>
+          <span>CONNECTIVA</span>
+        </div>
+
+        <div class="top-search">
+          <span class="search-icon">⌕</span>
+          <input
+            id="globalSearch"
+            type="search"
+            placeholder="Search CONNECTIVA..."
+            autocomplete="off"
+          />
+        </div>
+
+        <div class="top-actions">
+          <button class="icon-btn desktop-only" type="button" title="Notifications">
+            ♢
+          </button>
+
+          <button id="headerProfileBtn" class="icon-btn" type="button" title="Profile">
+            <span id="headerAvatar" class="user-avatar">C</span>
+          </button>
+        </div>
+
+      </div>
+    </header>
+
+
+    <div class="layout">
+
+      <!-- SIDEBAR -->
+      <aside class="sidebar">
+        <div class="nav-card">
+
+          <button class="nav-item active" data-page="home" type="button">
+            <span class="nav-icon">⌂</span>
+            <span>Home</span>
+          </button>
+
+          <button class="nav-item" data-page="discover" type="button">
+            <span class="nav-icon">⌕</span>
+            <span>Discover</span>
+          </button>
+
+          <button class="nav-item" data-page="messages" type="button">
+            <span class="nav-icon">◌</span>
+            <span>Messages</span>
+          </button>
+
+          <button class="nav-item" data-page="profile" type="button">
+            <span class="nav-icon">◉</span>
+            <span>Profile</span>
+          </button>
+
+          <button id="settingsNav" class="nav-item" data-page="settings" type="button">
+            <span class="nav-icon">⚙</span>
+            <span>Settings</span>
+          </button>
+
+          <div style="height:8px;"></div>
+
+          <button id="logoutBtn" class="nav-item" type="button">
+            <span class="nav-icon">↪</span>
+            <span>Sign out</span>
+          </button>
+
+        </div>
+      </aside>
+
+
+      <!-- MAIN -->
+      <main class="main-column">
+
+        <!-- HOME -->
+        <section id="page-home" class="page active">
+
+          <div class="page-header">
+            <h1>Home</h1>
+            <p>What's happening on CONNECTIVA?</p>
+          </div>
+
+          <div class="composer">
+            <div class="composer-top">
+
+              <div id="composerAvatar" class="user-avatar">
+                C
+              </div>
+
+              <textarea
+                id="postBody"
+                maxlength="5000"
+                placeholder="Share something with CONNECTIVA..."
+              ></textarea>
+            </div>
+
+            <div class="composer-footer">
+
+              <div class="composer-tools">
+
+                <button id="mediaButton" class="composer-tool" type="button">
+                  🖼 Media URL
+                </button>
+
+                <button id="privacyButton" class="composer-tool" type="button">
+                  🔒 Public
+                </button>
+
+              </div>
+
+              <button id="publishPost" class="publish-btn" type="button">
+                Publish
+              </button>
+
+            </div>
+
+            <input
+              id="mediaUrlInput"
+              class="input hidden"
+              style="margin-top:10px;"
+              type="url"
+              placeholder="https://example.com/image.jpg"
+            />
+
+            <select
+              id="privacySelect"
+              class="select hidden"
+              style="margin-top:10px;"
+            >
+              <option value="public">Public</option>
+              <option value="private">Private</option>
+              <option value="followers">Followers</option>
+            </select>
+
+          </div>
+
+          <div id="feed" class="feed">
+            <div class="empty-state">
+              <div class="empty-state-icon">◌</div>
+              <div>Loading CONNECTIVA feed...</div>
+            </div>
+          </div>
+
+        </section>
+
+
+        <!-- DISCOVER -->
+        <section id="page-discover" class="page">
+
+          <div class="page-header">
+            <h1>Discover</h1>
+            <p>Explore the CONNECTIVA experience.</p>
+          </div>
+
+          <div class="discover-grid">
+
+            <article class="discover-card">
+              <div style="font-size:30px;">🌎</div>
+              <h3>People</h3>
+              <p>
+                Discover people and communities as CONNECTIVA's social graph grows.
+              </p>
+            </article>
+
+            <article class="discover-card">
+              <div style="font-size:30px;">✨</div>
+              <h3>Ideas</h3>
+              <p>
+                Explore conversations, posts and new perspectives.
+              </p>
+            </article>
+
+            <article class="discover-card">
+              <div style="font-size:30px;">🔥</div>
+              <h3>Trending</h3>
+              <p>
+                A foundation for future trending topics and discovery systems.
+              </p>
+            </article>
+
+            <article class="discover-card">
+              <div style="font-size:30px;">🚀</div>
+              <h3>Future</h3>
+              <p>
+                CONNECTIVA is designed to grow without rebuilding its core.
+              </p>
+            </article>
+
+          </div>
+
+        </section>
+
+
+        <!-- MESSAGES -->
+        <section id="page-messages" class="page">
+
+          <div class="page-header">
+            <h1>Messages</h1>
+            <p>Your conversations will live here.</p>
+          </div>
+
+          <div class="messages-card">
+            <div>
+              <div class="messages-icon">💬</div>
+              <h2>Messaging foundation</h2>
+              <p>
+                The CONNECTIVA interface is ready for messaging.
+                Persistent conversations require a messages/conversations
+                database schema, which has not yet been created in your
+                Supabase project.
+              </p>
+
+              <button
+                class="secondary-btn"
+                type="button"
+                onclick="showToast('Messaging database can be added as a future CONNECTIVA module.', 'success')"
+              >
+                Module ready for expansion
+              </button>
+            </div>
+          </div>
+
+        </section>
+
+
+        <!-- PROFILE -->
+        <section id="page-profile" class="page">
+
+          <div class="page-header">
+            <h1>Profile</h1>
+            <p>Your CONNECTIVA identity.</p>
+          </div>
+
+          <div class="profile-card">
+
+            <div class="profile-cover"></div>
+
+            <div class="profile-info">
+
+              <div class="profile-avatar-wrap">
+                <div id="profileAvatar" class="profile-avatar">
+                  C
+                </div>
+              </div>
+
+              <div id="profileName" class="profile-name">
+                CONNECTIVA User
+              </div>
+
+              <div id="profileEmail" class="profile-email">
+                —
+              </div>
+
+              <div class="profile-stats">
+                <div class="stat">
+                  <strong id="profilePostCount">0</strong>
+                  <span>Posts</span>
+                </div>
+
+                <div class="stat">
+                  <strong>—</strong>
+                  <span>Followers</span>
+                </div>
+
+                <div class="stat">
+                  <strong>—</strong>
+                  <span>Following</span>
+                </div>
+              </div>
+
+              <div style="margin-top:20px;">
+                <button id="editProfileBtn" class="secondary-btn" type="button">
+                  Edit profile
+                </button>
+              </div>
+
+            </div>
+          </div>
+
+        </section>
+
+
+        <!-- SETTINGS -->
+        <section id="page-settings" class="page">
+
+          <div class="page-header">
+            <h1>Settings</h1>
+            <p>Manage your CONNECTIVA account.</p>
+          </div>
+
+          <div class="side-card" style="padding:20px;">
+
+            <h3>Account</h3>
+
+            <div class="field">
+              <label>Email</label>
+              <input
+                id="settingsEmail"
+                class="input"
+                type="text"
+                readonly
+              />
+            </div>
+
+            <div class="field">
+              <label>Account ID</label>
+              <input
+                id="settingsUserId"
+                class="input"
+                type="text"
+                readonly
+              />
+            </div>
+
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+              <button id="settingsSignout" class="danger-btn" type="button">
+                Sign out
+              </button>
+            </div>
+
+          </div>
+
+        </section>
+
+      </main>
+
+
+      <!-- RIGHT COLUMN -->
+      <aside class="right-column">
+
+        <div class="side-card">
+          <h3>Your account</h3>
+
+          <div class="side-user">
+            <div id="sideAvatar" class="user-avatar">C</div>
+
+            <div class="side-user-info">
+              <strong id="sideName">CONNECTIVA User</strong>
+              <span id="sideEmail">—</span>
+            </div>
+          </div>
+
+          <button
+            class="secondary-btn"
+            style="width:100%;"
+            type="button"
+            onclick="navigate('profile')"
+          >
+            View profile
+          </button>
+        </div>
+
+        <div class="side-card">
+          <h3>CONNECTIVA</h3>
+
+          <p class="footer-note">
+            Connect. Share. Discover.
+            <br />
+            Core release architecture.
+            <br />
+            Built to evolve.
+          </p>
+        </div>
+
+      </aside>
+
+    </div>
+
+
+    <!-- MOBILE NAV -->
+    <nav class="mobile-nav">
+      <div class="mobile-nav-inner">
+
+        <button class="active" data-page="home" type="button">
+          <span class="mobile-nav-icon">⌂</span>
+          Home
+        </button>
+
+        <button data-page="discover" type="button">
+          <span class="mobile-nav-icon">⌕</span>
+          Discover
+        </button>
+
+        <button data-page="messages" type="button">
+          <span class="mobile-nav-icon">◌</span>
+          Messages
+        </button>
+
+        <button data-page="profile" type="button">
+          <span class="mobile-nav-icon">◉</span>
+          Profile
+        </button>
+
+        <button data-page="settings" type="button">
+          <span class="mobile-nav-icon">⚙</span>
+          Settings
+        </button>
+
+      </div>
+    </nav>
+
+  </section>
+
+
+  <!-- ============================================================
+       EDIT PROFILE MODAL
+  ============================================================= -->
+  <div id="profileModalLayer" class="modal-layer">
+    <div class="modal">
+
+      <div class="modal-header">
+        <h2>Edit profile</h2>
+
+        <button
+          id="closeProfileModal"
+          class="close-btn"
+          type="button"
+        >
+          ×
+        </button>
+      </div>
+
+      <div class="field">
+        <label for="editName">Display name</label>
+
+        <input
+          id="editName"
+          class="input"
+          type="text"
+          maxlength="60"
+          placeholder="Your display name"
+        />
+      </div>
+
+      <div class="field">
+        <label for="editAvatarUrl">Avatar image URL</label>
+
+        <input
+          id="editAvatarUrl"
+          class="input"
+          type="url"
+          placeholder="https://example.com/avatar.jpg"
+        />
+      </div>
+
+      <p style="font-size:12px;color:var(--muted);">
+        This version stores profile presentation data in Supabase Auth
+        user metadata. Authorization is not based on this metadata.
+      </p>
+
+      <div class="modal-actions">
+        <button
+          id="cancelProfileEdit"
+          class="secondary-btn"
+          type="button"
+        >
+          Cancel
+        </button>
+
+        <button
+          id="saveProfile"
+          class="publish-btn"
+          type="button"
+        >
+          Save
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ============================================================
+       EDIT POST MODAL
+  ============================================================= -->
+  <div id="postModalLayer" class="modal-layer">
+    <div class="modal">
+
+      <div class="modal-header">
+        <h2>Edit post</h2>
+
+        <button
+          id="closePostModal"
+          class="close-btn"
+          type="button"
+        >
+          ×
+        </button>
+      </div>
+
+      <input id="editPostId" type="hidden" />
+
+      <div class="field">
+        <label for="editPostBody">Post</label>
+
+        <textarea
+          id="editPostBody"
+          class="textarea"
+          maxlength="5000"
+        ></textarea>
+      </div>
+
+      <div class="field">
+        <label for="editPostPrivacy">Privacy</label>
+
+        <select id="editPostPrivacy" class="select">
+          <option value="public">Public</option>
+          <option value="private">Private</option>
+          <option value="followers">Followers</option>
+        </select>
+      </div>
+
+      <div class="modal-actions">
+        <button
+          id="cancelPostEdit"
+          class="secondary-btn"
+          type="button"
+        >
+          Cancel
+        </button>
+
+        <button
+          id="savePostEdit"
+          class="publish-btn"
+          type="button"
+        >
+          Save changes
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+
+  <div id="toastContainer" class="toast-container"></div>
+
+
+  <script>
+    /* ============================================================
+       CONNECTIVA CORE
+       ============================================================
+
+       Architecture:
+       - Browser
+       - Supabase Auth
+       - Supabase Data API
+       - public.posts
+       - RLS
+
+       IMPORTANT:
+       This is a browser-safe publishable key.
+       NEVER replace it with a secret/service_role key.
+    ============================================================ */
+
+    const CONNECTIVA = Object.freeze({
+      NAME: "CONNECTIVA",
+      RELEASE: "Core",
+      PROJECT: "Social Platform",
+      SUPABASE_URL: "https://mrzlxirhwwtqzigjqqkd.supabase.co",
+      SUPABASE_KEY: "sb_publishable_zcl7cHBt-q-cSITBSik4Bg_cHWnK7Cq"
+    });
+
+    const { createClient } = window.supabase;
+
+    const supabase = createClient(
+      CONNECTIVA.SUPABASE_URL,
+      CONNECTIVA.SUPABASE_KEY,
+      {
+        auth: {
+          autoRefreshToken: true,
+          persistSession: true,
+          detectSessionInUrl: true
+        }
+      }
+    );
+
+
+    /* ============================================================
+       APP STATE
+    ============================================================ */
+
+    const state = {
+      user: null,
+      session: null,
+      posts: [],
+      authMode: "login",
+      currentPage: "home",
+      editingPost: null,
+      loadingPosts: false
+    };
+
+
+    /* ============================================================
+       DOM HELPERS
+    ============================================================ */
+
+    const $ = (id) => document.getElementById(id);
+
+    function escapeHtml(value) {
+      if (value === null || value === undefined) return "";
+
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+
+    function initials(name = "C") {
+      const clean = String(name).trim();
+
+      if (!clean) return "C";
+
+      const parts = clean.split(/\s+/);
+
+      if (parts.length === 1) {
+        return parts[0].slice(0, 2).toUpperCase();
+      }
+
+      return (
+        parts[0].charAt(0) +
+        parts[parts.length - 1].charAt(0)
+      ).toUpperCase();
+    }
+
+
+    function displayName(user) {
+      if (!user) return "CONNECTIVA User";
+
+      const metadata = user.user_metadata || {};
+
+      return (
+        metadata.display_name ||
+        metadata.full_name ||
+        metadata.name ||
+        user.email?.split("@")[0] ||
+        "CONNECTIVA User"
+      );
+    }
+
+
+    function avatarUrl(user) {
+      if (!user) return "";
+
+      const metadata = user.user_metadata || {};
+
+      return (
+        metadata.avatar_url ||
+        metadata.picture ||
+        ""
+      );
+    }
+
+
+    function formatDate(value) {
+      if (!value) return "";
+
+      const date = new Date(value);
+
+      if (Number.isNaN(date.getTime())) {
+        return "";
+      }
+
+      return new Intl.DateTimeFormat(undefined, {
+        dateStyle: "medium",
+        timeStyle: "short"
+      }).format(date);
+    }
+
+
+    function safeImageUrl(value) {
+      if (!value) return null;
+
+      try {
+        const url = new URL(value);
+
+        if (
+          url.protocol !== "https:" &&
+          url.protocol !== "http:"
+        ) {
+          return null;
+        }
+
+        return url.href;
+      } catch {
+        return null;
+      }
+    }
+
+
+    /* ============================================================
+       TOAST
+    ============================================================ */
+
+    function showToast(message, type = "normal") {
+      const container = $("toastContainer");
+
+      const toast = document.createElement("div");
+
+      toast.className =
+        "toast " +
+        (type === "success" ? "success" : "") +
+        (type === "error" ? "error" : "");
+
+      toast.textContent = message;
+
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.remove();
+      }, 4000);
+    }
+
+
+    /* ============================================================
+       AUTH UI
+    ============================================================ */
+
+    function setAuthMode(mode) {
+      state.authMode = mode;
+
+      const login = mode === "login";
+
+      $("loginTab").classList.toggle("active", login);
+      $("signupTab").classList.toggle("active", !login);
+
+      $("nameField").classList.toggle("hidden", login);
+
+      $("authTitle").textContent = login
+        ? "Welcome back"
+        : "Create your account";
+
+      $("authSubtitle").textContent = login
+        ? "Sign in to continue to CONNECTIVA."
+        : "Create your CONNECTIVA identity.";
+
+      $("authSubmit").textContent = login
+        ? "Sign in"
+        : "Create account";
+
+      $("authPassword").setAttribute(
+        "autocomplete",
+        login ? "current-password" : "new-password"
+      );
+
+      $("authMessage").textContent = "";
+    }
+
+
+    $("loginTab").addEventListener("click", () => {
+      setAuthMode("login");
+    });
+
+
+    $("signupTab").addEventListener("click", () => {
+      setAuthMode("signup");
+    });
+
+
+    $("authForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const email = $("authEmail").value.trim();
+      const password = $("authPassword").value;
+      const name = $("authName").value.trim();
+
+      if (!email || !password) {
+        $("authMessage").textContent =
+          "Enter your email and password.";
+
+        return;
+      }
+
+      if (state.authMode === "signup" && password.length < 6) {
+        $("authMessage").textContent =
+          "Password must be at least 6 characters.";
+
+        return;
+      }
+
+      $("authSubmit").disabled = true;
+      $("authSubmit").textContent =
+        state.authMode === "login"
+          ? "Signing in..."
+          : "Creating account...";
+
+      $("authMessage").textContent = "";
+
+      try {
+        if (state.authMode === "login") {
+          const { error } =
+            await supabase.auth.signInWithPassword({
+              email,
+              password
+            });
+
+          if (error) throw error;
+
+          showToast("Welcome back to CONNECTIVA.", "success");
+        } else {
+          const { data, error } =
+            await supabase.auth.signUp({
+              email,
+              password,
+              options: {
+                data: {
+                  display_name:
+                    name || email.split("@")[0]
+                }
+              }
+            });
+
+          if (error) throw error;
+
+          if (data.session) {
+            showToast(
+              "Your CONNECTIVA account is ready.",
+              "success"
+            );
+          } else {
+            $("authMessage").textContent =
+              "Account created. Check your email if confirmation is required.";
+
+            showToast(
+              "Check your email to confirm your account.",
+              "success"
+            );
+          }
+        }
+      } catch (error) {
+        console.error(error);
+
+        $("authMessage").textContent =
+          error?.message ||
+          "Authentication failed.";
+
+        showToast(
+          error?.message ||
+          "Authentication failed.",
+          "error"
+        );
+      } finally {
+        $("authSubmit").disabled = false;
+
+        $("authSubmit").textContent =
+          state.authMode === "login"
+            ? "Sign in"
+            : "Create account";
+      }
+    });
+
+
+    /* ============================================================
+       AUTH STATE
+    ============================================================ */
+
+    supabase.auth.onAuthStateChange(
+      async (_event, session) => {
+        state.session = session;
+        state.user = session?.user || null;
+
+        await updateApplicationState();
+      }
+    );
+
+
+    async function initializeAuth() {
+      try {
+        const {
+          data: { session },
+          error
+        } = await supabase.auth.getSession();
+
+        if (error) throw error;
+
+        state.session = session;
+        state.user = session?.user || null;
+
+        await updateApplicationState();
+      } catch (error) {
+        console.error(error);
+
+        showToast(
+          "Could not initialize your session.",
+          "error"
+        );
+      }
+    }
+
+
+    async function updateApplicationState() {
+      if (!state.user) {
+        $("authScreen").classList.remove("hidden");
+        $("mainApp").classList.add("hidden");
+        return;
+      }
+
+      $("authScreen").classList.add("hidden");
+      $("mainApp").classList.remove("hidden");
+
+      updateUserInterface();
+
+      await loadPosts();
+    }
+
+
+    /* ============================================================
+       USER UI
+    ============================================================ */
+
+    function setAvatar(element, user) {
+      if (!element) return;
+
+      const url = safeImageUrl(avatarUrl(user));
+
+      if (url) {
+        element.innerHTML =
+          `<img src="${escapeHtml(url)}" alt="Profile avatar">`;
+      } else {
+        element.textContent =
+          initials(displayName(user));
+      }
+    }
+
+
+    function updateUserInterface() {
+      const user = state.user;
+
+      if (!user) return;
+
+      const name = displayName(user);
+      const email = user.email || "No email";
+
+      $("sideName").textContent = name;
+      $("sideEmail").textContent = email;
+
+      $("profileName").textContent = name;
+      $("profileEmail").textContent = email;
+
+      $("settingsEmail").value = email;
+      $("settingsUserId").value = user.id;
+
+      setAvatar($("headerAvatar"), user);
+      setAvatar($("composerAvatar"), user);
+      setAvatar($("sideAvatar"), user);
+      setAvatar($("profileAvatar"), user);
+    }
+
+
+    /* ============================================================
+       NAVIGATION
+    ============================================================ */
+
+    function navigate(page) {
+      state.currentPage = page;
+
+      document
+        .querySelectorAll(".page")
+        .forEach((section) => {
+          section.classList.toggle(
+            "active",
+            section.id === `page-${page}`
+          );
+        });
+
+      document
+        .querySelectorAll("[data-page]")
+        .forEach((button) => {
+          button.classList.toggle(
+            "active",
+            button.dataset.page === page
+          );
+        });
+
+      if (page === "home") {
+        loadPosts();
+      }
+
+      if (page === "profile") {
+        updateProfileStats();
+      }
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    }
+
+
+    window.navigate = navigate;
+
+
+    document
+      .querySelectorAll("[data-page]")
+      .forEach((button) => {
+        button.addEventListener("click", () => {
+          navigate(button.dataset.page);
+        });
+      });
+
+
+    $("headerProfileBtn").addEventListener("click", () => {
+      navigate("profile");
+    });
+
+
+    /* ============================================================
+       POSTS — LOAD
+    ============================================================ */
+
+    async function loadPosts() {
+      if (!state.user || state.loadingPosts) {
+        return;
+      }
+
+      state.loadingPosts = true;
+
+      const feed = $("feed");
+
+      feed.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-state-icon">◌</div>
+          <div>Loading posts...</div>
+        </div>
+      `;
+
+      try {
+        /*
+          IMPORTANT:
+          We intentionally select only columns confirmed
+          to exist in your posts table.
+        */
+
+        const {
+          data,
+          error
+        } = await supabase
+          .from("posts")
+          .select(
+            "id, author_id, body, media_url, created_at, updated_at, privacy"
+          )
+          .order("created_at", {
+            ascending: false
+          })
+          .limit(50);
+
+        if (error) throw error;
+
+        state.posts = data || [];
+
+        renderPosts();
+        updateProfileStats();
+
+      } catch (error) {
+        console.error("LOAD POSTS ERROR:", error);
+
+        feed.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">⚠</div>
+            <div style="margin-bottom:8px;">
+              Could not load the CONNECTIVA feed.
+            </div>
+            <small>
+              ${escapeHtml(error?.message || "Unknown error")}
+            </small>
+          </div>
+        `;
+
+      } finally {
+        state.loadingPosts = false;
+      }
+    }
+
+
+    /* ============================================================
+       POSTS — RENDER
+    ============================================================ */
+
+    function renderPosts() {
+      const feed = $("feed");
+
+      if (!state.posts.length) {
+        feed.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">✨</div>
+            <h3>No posts yet</h3>
+            <p style="margin-top:6px;">
+              Be the first person to share something on CONNECTIVA.
+            </p>
+          </div>
+        `;
+
+        return;
+      }
+
+      feed.innerHTML = state.posts
+        .map((post) => renderPost(post))
+        .join("");
+    }
+
+
+    function renderPost(post) {
+      const own =
+        state.user &&
+        post.author_id === state.user.id;
+
+      const name = own
+        ? displayName(state.user)
+        : "CONNECTIVA User";
+
+      const avatar = own
+        ? safeImageUrl(avatarUrl(state.user))
+        : null;
+
+      const media = safeImageUrl(post.media_url);
+
+      return `
+        <article class="post" data-post-id="${escapeHtml(post.id)}">
+
+          <div class="post-header">
+
+            <div class="user-avatar">
+              ${
+                avatar
+                  ? `<img src="${escapeHtml(avatar)}" alt="Avatar">`
+                  : escapeHtml(initials(name))
+              }
+            </div>
+
+            <div class="post-author">
+              <strong>${escapeHtml(name)}</strong>
+
+              <div class="post-meta">
+                ${escapeHtml(formatDate(post.created_at))}
+                ·
+                ${escapeHtml(post.privacy || "public")}
+              </div>
+            </div>
+
+            ${
+              own
+                ? `
+                  <div class="post-menu">
+                    <button
+                      class="icon-btn"
+                      type="button"
+                      title="Post options"
+                      onclick="openPostActions('${escapeHtml(post.id)}')"
+                    >
+                      ⋯
+                    </button>
+                  </div>
+                `
+                : ""
+            }
+
+          </div>
+
+          ${
+            post.body
+              ? `
+                <div class="post-body">
+                  ${escapeHtml(post.body)}
+                </div>
+              `
+              : ""
+          }
+
+          ${
+            media
+              ? `
+                <img
+                  class="post-media"
+                  src="${escapeHtml(media)}"
+                  alt="Post media"
+                  loading="lazy"
+                  onerror="this.style.display='none'"
+                />
+              `
+              : ""
+          }
+
+          <div class="post-footer">
+
+            <button
+              class="post-action"
+              type="button"
+              onclick="showToast('Reactions will be connected when the reactions schema is added.', 'success')"
+            >
+              ♡ Like
+            </button>
+
+            <button
+              class="post-action"
+              type="button"
+              onclick="showToast('Comments will be connected when the comments schema is added.', 'success')"
+            >
+              ◌ Comment
+            </button>
+
+            <button
+              class="post-action"
+              type="button"
+              onclick="copyPost('${escapeHtml(post.id)}')"
+            >
+              ↗ Share
+            </button>
+
+          </div>
+
+        </article>
+      `;
+    }
+
+
+    /* ============================================================
+       POST CREATION
+    ============================================================ */
+
+    $("mediaButton").addEventListener("click", () => {
+      $("mediaUrlInput").classList.toggle("hidden");
+    });
+
+
+    $("privacyButton").addEventListener("click", () => {
+      const select = $("privacySelect");
+
+      select.classList.toggle("hidden");
+
+      if (!select.classList.contains("hidden")) {
+        select.focus();
+      }
+    });
+
+
+    $("privacySelect").addEventListener("change", () => {
+      const value = $("privacySelect").value;
+
+      $("privacyButton").textContent =
+        value === "public"
+          ? "🔒 Public"
+          : value === "private"
+            ? "🔐 Private"
+            : "👥 Followers";
+    });
+
+
+    $("publishPost").addEventListener(
+      "click",
+      createPost
+    );
+
+
+    async function createPost() {
+      /*
+        THIS IS THE IMPORTANT RLS FIX.
+
+        Your database requires:
+
+        author_id = auth.uid()
+
+        Therefore we obtain the authenticated user first
+        and explicitly send user.id as author_id.
+      */
+
+      const {
+        data: { user },
+        error: userError
+      } = await supabase.auth.getUser();
+
+      if (userError) {
+        console.error(userError);
+
+        showToast(
+          "Could not verify your account.",
+          "error"
+        );
+
+        return;
+      }
+
+      if (!user) {
+        showToast(
+          "Please sign in before creating a post.",
+          "error"
+        );
+
+        return;
+      }
+
+      const body = $("postBody").value.trim();
+      const mediaUrl = $("mediaUrlInput").value.trim();
+      const privacy = $("privacySelect").value || "public";
+
+      if (!body && !mediaUrl) {
+        showToast(
+          "Write something or add a media URL first.",
+          "error"
+        );
+
+        return;
+      }
+
+      const publishButton = $("publishPost");
+
+      publishButton.disabled = true;
+      publishButton.textContent = "Publishing...";
+
+      try {
+        const insertPayload = {
+          author_id: user.id,
+          body: body || null,
+          media_url: mediaUrl || null,
+          privacy
+        };
+
+        console.log(
+          "CONNECTIVA post payload:",
+          insertPayload
+        );
+
+        const {
+          data,
+          error
+        } = await supabase
+          .from("posts")
+          .insert(insertPayload)
+          .select(
+            "id, author_id, body, media_url, created_at, updated_at, privacy"
+          )
+          .single();
+
+        if (error) {
+          console.error(
+            "CONNECTIVA CREATE POST ERROR:",
+            error
+          );
+
+          throw error;
+        }
+
+        console.log(
+          "CONNECTIVA POST CREATED:",
+          data
+        );
+
+        $("postBody").value = "";
+        $("mediaUrlInput").value = "";
+        $("mediaUrlInput").classList.add("hidden");
+
+        $("privacySelect").value = "public";
+        $("privacySelect").classList.add("hidden");
+        $("privacyButton").textContent = "🔒 Public";
+
+        showToast(
+          "Post published successfully.",
+          "success"
+        );
+
+        await loadPosts();
+
+      } catch (error) {
+        console.error(error);
+
+        /*
+          Keep the exact database error visible.
+          This makes future debugging much easier.
+        */
+
+        showToast(
+          error?.message ||
+          "Could not create post.",
+          "error"
+        );
+
+      } finally {
+        publishButton.disabled = false;
+        publishButton.textContent = "Publish";
+      }
+    }
+
+
+    /* ============================================================
+       POST ACTIONS
+    ============================================================ */
+
+    window.openPostActions = function(postId) {
+      const post = state.posts.find(
+        (item) => item.id === postId
+      );
+
+      if (!post) return;
+
+      const action = window.prompt(
+        "Type EDIT to edit this post or DELETE to delete it."
+      );
+
+      if (!action) return;
+
+      const command = action.trim().toLowerCase();
+
+      if (command === "edit") {
+        openPostEditor(post);
+      }
+
+      if (command === "delete") {
+        deletePost(post);
+      }
+    };
+
+
+    function openPostEditor(post) {
+      state.editingPost = post;
+
+      $("editPostId").value = post.id;
+      $("editPostBody").value = post.body || "";
+      $("editPostPrivacy").value =
+        post.privacy || "public";
+
+      $("postModalLayer").classList.add("open");
+    }
+
+
+    async function deletePost(post) {
+      const confirmed = window.confirm(
+        "Delete this post permanently?"
+      );
+
+      if (!confirmed) return;
+
+      try {
+        const {
+          error
+        } = await supabase
+          .from("posts")
+          .delete()
+          .eq("id", post.id)
+          .eq("author_id", state.user.id);
+
+        if (error) throw error;
+
+        showToast(
+          "Post deleted.",
+          "success"
+        );
+
+        await loadPosts();
+
+      } catch (error) {
+        console.error(error);
+
+        showToast(
+          error?.message ||
+          "Could not delete post.",
+          "error"
+        );
+      }
+    }
+
+
+    $("closePostModal").addEventListener(
+      "click",
+      closePostEditor
+    );
+
+    $("cancelPostEdit").addEventListener(
+      "click",
+      closePostEditor
+    );
+
+
+    function closePostEditor() {
+      $("postModalLayer").classList.remove("open");
+      state.editingPost = null;
+    }
+
+
+    $("savePostEdit").addEventListener(
+      "click",
+      savePostEdit
+    );
+
+
+    async function savePostEdit() {
+      const postId = $("editPostId").value;
+
+      const body =
+        $("editPostBody").value.trim();
+
+      const privacy =
+        $("editPostPrivacy").value;
+
+      if (!postId) return;
+
+      try {
+        const {
+          error
+        } = await supabase
+          .from("posts")
+          .update({
+            body: body || null,
+            privacy
+          })
+          .eq("id", postId)
+          .eq("author_id", state.user.id);
+
+        if (error) throw error;
+
+        closePostEditor();
+
+        showToast(
+          "Post updated.",
+          "success"
+        );
+
+        await loadPosts();
+
+      } catch (error) {
+        console.error(error);
+
+        showToast(
+          error?.message ||
+          "Could not update post.",
+          "error"
+        );
+      }
+    }
+
+
+    /* ============================================================
+       SHARE
+    ============================================================ */
+
+    window.copyPost = async function(postId) {
+      const url =
+        window.location.href.split("#")[0] +
+        "#post-" +
+        postId;
+
+      try {
+        await navigator.clipboard.writeText(url);
+
+        showToast(
+          "Post link copied.",
+          "success"
+        );
+      } catch {
+        window.prompt(
+          "Copy this post link:",
+          url
+        );
+      }
+    };
+
+
+    /* ============================================================
+       PROFILE
+    ============================================================ */
+
+    function updateProfileStats() {
+      if (!state.user) return;
+
+      const count = state.posts.filter(
+        (post) =>
+          post.author_id === state.user.id
+      ).length;
+
+      $("profilePostCount").textContent =
+        String(count);
+    }
+
+
+    $("editProfileBtn").addEventListener(
+      "click",
+      openProfileEditor
+    );
+
+
+    function openProfileEditor() {
+      const metadata =
+        state.user?.user_metadata || {};
+
+      $("editName").value =
+        metadata.display_name ||
+        metadata.full_name ||
+        metadata.name ||
+        "";
+
+      $("editAvatarUrl").value =
+        metadata.avatar_url ||
+        "";
+
+      $("profileModalLayer").classList.add(
+        "open"
+      );
+    }
+
+
+    $("closeProfileModal").addEventListener(
+      "click",
+      closeProfileEditor
+    );
+
+
+    $("cancelProfileEdit").addEventListener(
+      "click",
+      closeProfileEditor
+    );
+
+
+    function closeProfileEditor() {
+      $("profileModalLayer").classList.remove(
+        "open"
+      );
+    }
+
+
+    $("saveProfile").addEventListener(
+      "click",
+      saveProfile
+    );
+
+
+    async function saveProfile() {
+      const name =
+        $("editName").value.trim();
+
+      const avatar =
+        $("editAvatarUrl").value.trim();
+
+      try {
+        const {
+          data,
+          error
+        } = await supabase.auth.updateUser({
+          data: {
+            display_name:
+              name ||
+              state.user.email?.split("@")[0] ||
+              "CONNECTIVA User",
+
+            avatar_url:
+              avatar || null
+          }
+        });
+
+        if (error) throw error;
+
+        state.user = data.user;
+
+        updateUserInterface();
+
+        closeProfileEditor();
+
+        showToast(
+          "Profile updated.",
+          "success"
+        );
+
+        await loadPosts();
+
+      } catch (error) {
+        console.error(error);
+
+        showToast(
+          error?.message ||
+          "Could not update profile.",
+          "error"
+        );
+      }
+    }
+
+
+    /* ============================================================
+       LOGOUT
+    ============================================================ */
+
+    $("logoutBtn").addEventListener(
+      "click",
+      signOut
+    );
+
+    $("settingsSignout").addEventListener(
+      "click",
+      signOut
+    );
+
+
+    async function signOut() {
+      try {
+        const { error } =
+          await supabase.auth.signOut();
+
+        if (error) throw error;
+
+        state.user = null;
+        state.session = null;
+        state.posts = [];
+
+        showToast(
+          "Signed out.",
+          "success"
+        );
+
+      } catch (error) {
+        console.error(error);
+
+        showToast(
+          error?.message ||
+          "Could not sign out.",
+          "error"
+        );
+      }
+    }
+
+
+    /* ============================================================
+       SEARCH
+    ============================================================ */
+
+    $("globalSearch").addEventListener(
+      "keydown",
+      (event) => {
+        if (event.key !== "Enter") return;
+
+        const query =
+          event.target.value.trim();
+
+        if (!query) {
+          navigate("home");
+          return;
+        }
+
+        const results =
+          state.posts.filter((post) =>
+            String(post.body || "")
+              .toLowerCase()
+              .includes(query.toLowerCase())
+          );
+
+        navigate("home");
+
+        if (!results.length) {
+          showToast(
+            `No posts found for "${query}".`
+          );
+
+          return;
+        }
+
+        $("feed").innerHTML = results
+          .map(renderPost)
+          .join("");
+
+        showToast(
+          `${results.length} matching post(s) found.`,
+          "success"
+        );
+      }
+    );
+
+
+    /* ============================================================
+       MODAL BACKDROP CLOSE
+    ============================================================ */
+
+    $("profileModalLayer").addEventListener(
+      "click",
+      (event) => {
+        if (
+          event.target ===
+          $("profileModalLayer")
+        ) {
+          closeProfileEditor();
+        }
+      }
+    );
+
+
+    $("postModalLayer").addEventListener(
+      "click",
+      (event) => {
+        if (
+          event.target ===
+          $("postModalLayer")
+        ) {
+          closePostEditor();
+        }
+      }
+    );
+
+
+    /* ============================================================
+       KEYBOARD SHORTCUT
+    ============================================================ */
+
+    document.addEventListener(
+      "keydown",
+      (event) => {
+        if (
+          event.key === "/" &&
+          document.activeElement.tagName !== "INPUT" &&
+          document.activeElement.tagName !== "TEXTAREA"
+        ) {
+          event.preventDefault();
+
+          $("globalSearch").focus();
+        }
+
+        if (
+          event.key === "Escape"
+        ) {
+          closeProfileEditor();
+          closePostEditor();
+        }
+      }
+    );
+
+
+    /* ============================================================
+       START CONNECTIVA
+    ============================================================ */
+
+    initializeAuth();
+
+  </script>
+</body>
+</html>
